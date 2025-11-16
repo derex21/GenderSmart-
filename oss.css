@@ -1,0 +1,154 @@
+/* === MAIN CONTENT AREA === */
+main .content {
+    position: relative;
+    padding: 80px 40px;
+    text-align: center;
+    min-height: 100vh;
+    background:
+        linear-gradient(to right, rgba(190, 230, 190, 0.95), rgba(220, 245, 220, 0.95)),
+        url('../../image/centric.png') left center no-repeat,
+        url('../../image/logo.png') right center no-repeat;
+    background-size: cover, 350px auto, 350px auto;
+    background-attachment: fixed;
+    background-blend-mode: lighten;
+    opacity: 100;
+}
+
+main .content::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.3);
+    z-index: 0;
+}
+
+main .content > * {
+    position: relative;
+    z-index: 1;
+}
+
+/* === TITLE === */
+main .content h1 {
+    font-size: 2.6rem;
+    font-weight: 800;
+    color: #1a3a1a;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+}
+
+main .content p {
+    font-size: 1.1rem;
+    color: #2e4d25;
+    margin: 0 auto 50px;
+    max-width: 850px;
+    line-height: 1.6;
+}
+
+/* === ORG CHART CONTAINER === */
+.org-chart-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.org-chart-title h2 {
+    background: linear-gradient(135deg, #2e7d32, #66bb6a);
+    color: white;
+    padding: 15px 45px;
+    border-radius: 10px;
+    font-size: 1.8rem;
+    margin-bottom: 50px;
+    box-shadow: 0 6px 10px rgba(0,0,0,0.25);
+}
+
+/* === CHART LEVELS === */
+.org-chart {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+.org-level {
+    display: flex;
+    justify-content: center;
+    gap: 50px;
+    margin-bottom: 45px;
+    flex-wrap: wrap;
+}
+
+/* =======================================================
+   ✅ FINAL CORRECT CARD STYLE (MATCHES YOUR SCREENSHOT)
+   ======================================================= */
+.org-card {
+    display: flex;
+    align-items: center;
+    background: #ffffff;
+    border: 3px solid #C3D8C3;
+    border-radius: 22px;
+    padding: 25px 35px 25px 95px;
+    width: 550px;
+    position: relative;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.18);
+    transition: 0.3s ease;
+}
+
+.org-card:hover {
+    transform: translateY(-5px);
+}
+
+/* Profile Image */
+.org-card-photo {
+    position: absolute;
+    left: -50px; /* Slight overlap just like screenshot */
+}
+
+.org-card-photo img {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    border: 6px solid #DDB447; /* Gold border */
+    object-fit: cover;
+}
+
+/* Inner Text Box */
+.org-card-inner {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    width: 100%;
+}
+
+/* Name (Green Bar) */
+.org-card-name {
+    background: #2E7031;
+    color: white;
+    padding: 14px;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 1.15rem;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+/* Role (Yellow Bar) */
+.org-card-role {
+    background: #E5BD42;
+    color: #2b2b2b;
+    padding: 14px;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 1rem;
+    text-transform: uppercase;
+    text-align: center;
+}
+
+/* === RESPONSIVE === */
+@media(max-width: 700px) {
+    .org-card {
+        width: 100%;
+        padding-left: 75px;
+    }
+    .org-card-photo { left: -38px; }
+    .org-card-photo img { width: 95px; height: 95px; }
+}

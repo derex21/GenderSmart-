@@ -1,0 +1,90 @@
+/* Logout Dialog Styles */
+@import url('navigation-standards.css');
+
+.logout-confirm {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(255, 255, 255, 0.95);
+  padding: 25px;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  min-width: 300px;
+  text-align: center;
+}
+
+.logout-confirm.show {
+  display: block;
+}
+
+.logout-confirm .icon {
+  font-size: 48px;
+  color: #dc3545;
+  margin-bottom: 15px;
+}
+
+.logout-confirm p {
+  margin: 0 0 20px 0;
+  font-size: 16px;
+  color: #333;
+}
+
+.logout-confirm-buttons {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+}
+
+.logout-confirm-buttons button {
+  padding: 8px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.logout-confirm-buttons button i {
+  font-size: 16px;
+}
+
+.confirm-logout {
+  background: #dc3545;
+  color: white;
+}
+
+.confirm-logout:hover {
+  background: #c82333;
+}
+
+.cancel-logout {
+  background: #6c757d;
+  color: white;
+}
+
+.cancel-logout:hover {
+  background: #5a6268;
+}
+
+.logout-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  z-index: 999;
+}
+
+.logout-overlay.show {
+  display: block;
+} 

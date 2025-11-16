@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f7fa;
+        }
+        .test-container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .result {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+            border-left: 4px solid #007bff;
+        }
+        .error {
+            border-left-color: #dc3545;
+            background: #f8d7da;
+        }
+        .success {
+            border-left-color: #28a745;
+            background: #d4edda;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        pre {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>Webinar API Test</h1>
+        <p>This page tests the webinar API endpoints to diagnose connection issues.</p>
+        
+        <button onclick="testAPI()">Test API</button>
+        <button onclick="testDirect()">Test Direct URL</button>
+        <button onclick="clearResults()">Clear Results</button>
+        
+        <div id="results"></div>
+    </div>
+
+    <script>
+        function clearResults() {
+            document.getElementById('results').innerHTML = '';
+        }
+
+        function addResult(title, content, isError = false) {
+            const results = document.getElementById('results');
+            const div = document.createElement('div');
+            div.className = `result ${isError ? 'error' : 'success'}`;
+            div.innerHTML = `<h3>${title}</h3><pre>${content}</pre>`;
+            results.appendChild(div);
+        }
+
+        function testAPI() {
+            addResult('Testing API...', 'Fetching data from get_webinars_simple.php');
+            
+            fetch('../BACKEND/get_webinars_simple.php')
+                .then(response => {
+                    addResult('Response Status', `Status: ${response.status}\nHeaders: ${JSON.stringify([...response.headers.entries()], null, 2)}`);
+                    
+                    const contentType = response.headers.get('content-type');
+                    if (!contentType || !contentType.includes('application/json')) {
+                        return response.text().then(text => {
+                            addResult('Error: Non-JSON Response', text, true);
+                        });
+                    }
+                    
+                    return response.json();
+                })
+                .then(data => {
+                    addResult('API Response', JSON.stringify(data, null, 2));
+                })
+                .catch(error => {
+                    addResult('Fetch Error', error.message, true);
+                });
+        }
+
+        function testDirect() {
+            const url = '../BACKEND/get_webinars_simple.php';
+            addResult('Direct URL Test', `Opening: ${url}`);
+            window.open(url, '_blank');
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ICE Materials Test</title>
+    <link rel="stylesheet" href="css/ice_materials.css">
+    <link rel="stylesheet" href="css/icce_modal.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .test-title {
+            text-align: center;
+            font-size: 2.5rem;
+            color: #5c3c92;
+            margin-bottom: 2rem;
+            font-weight: 800;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1 class="test-title">ICE Materials Test</h1>
+        
+        <section id="ice-materials" class="ice-materials">
+            <h2>ICE MATERIALS</h2>
+            <div class="flyer-gallery">
+                <div class="flyer-card" data-modal="flyer1">
+                    <img src="../ICCE/1.2.png" alt="Flyer Cover 1">
+                    <h3>Prevent Teenage Pregnancy</h3>
+                </div>
+                <div class="flyer-card" data-modal="flyer2">
+                    <img src="../ICCE/3,1.png" alt="Flyer Cover 2">
+                    <h3>Republic Act (RA) 7877</h3>
+                </div>
+                <div class="flyer-card" data-modal="flyer3">
+                    <img src="../ICCE/fr.png" alt="Flyer Cover 3">
+                    <h3>RA 9262: Anti-Violence Against Women and their Children Act</h3>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Modals for Flyers -->
+    <div id="flyer1-modal" class="icce-modal">
+        <div class="icce-modal-content">
+            <span class="icce-close-btn">&times;</span>
+            <img src="../ICCE/1.png" alt="Flyer 1" class="icce-modal-flyer">
+            <img src="../ICCE/2.png" alt="Flyer 1" class="icce-modal-flyer">
+        </div>
+    </div>
+
+    <div id="flyer2-modal" class="icce-modal">
+        <div class="icce-modal-content">
+            <span class="icce-close-btn">&times;</span>
+            <img src="../ICCE/3.png" alt="Flyer 2 Front" class="icce-modal-flyer">
+            <img src="../ICCE/4.png" alt="Flyer 2 Back" class="icce-modal-flyer">
+        </div>
+    </div>
+
+    <div id="flyer3-modal" class="icce-modal">
+        <div class="icce-modal-content">
+            <span class="icce-close-btn">&times;</span>
+            <img src="../ICCE/FRONT.png" alt="Flyer 3 Front" class="icce-modal-flyer">
+            <img src="../ICCE/BACK.png" alt="Flyer 3 Back" class="icce-modal-flyer">
+        </div>
+    </div>
+
+    <script src="js/flyer_modal.js"></script>
+</body>
+</html>

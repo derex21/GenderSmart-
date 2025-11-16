@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gender Smart E-Learning</title>
+  <link rel="stylesheet" href="../css/home.css" />
+  <link rel="stylesheet" href="../css/main.css" />
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Custom JavaScript -->
+  <script src="../js/animations.js" defer></script>
+  <script src="../js/tabs.js" defer></script>
+  <script src="../js/shared-navigation.js" defer></script>
+  <script src="../js/flyer_modal.js" defer></script>
+</head>
+<body data-page="Home">
+    <header>
+        <div class="logo">
+            <img src="../../image/logo.png" alt="Gender Smart Logo" class="logo-img">
+            Gender Smart E-Learning
+        </div>
+        <nav>
+          <ul class="navbar">
+            <li><a href="homepage.html">Home</a></li>
+            <li class="dropdown">
+              <a href="#">About Us ▾</a>
+              <ul class="dropdown-menu">
+                <li><a href="herstory.html">Herstory</a></li>
+                <li><a href="missionvision.html">Vision, Mission, Mandates and Functions</a></li>
+                <li><a href="logo.html">The Logo</a></li>
+                <li><a href="qp.html">Quality Policy Statement</a></li>
+                <li><a href="core.html">Core Values</a></li>
+                <li><a href="os.html">Organizational Structure</a></li>
+                <li><a href="wpp.html">Our Website Privacy Policy</a></li>
+              </ul>
+            </li>
+            <li class="dropdown">
+              <a href="#">Projects/Programs ▾</a>
+              <ul class="dropdown-menu">
+                <li><a href="gadtimpala.html">GADtimpala</a></li>
+                <li><a href="gadwebinars.html">GAD webinars</a></li>
+              </ul>
+          </ul>
+        </nav>
+        <div class="auth-buttons">
+          <a href="../login.php" class="login">Student Login</a>
+        </div>
+        <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+      </header>
+    
+      <div class="gradient-line"></div>
+  <!-- Main Content -->
+  <main>
+    <section class="webinars">
+      <h1 class="fade-in">GAD Webinars</h1>
+      <p class="webinars-overview fade-in">Join our interactive webinars focused on gender and development topics, led by industry experts and thought leaders.</p>
+
+      <div class="search-bar">
+        <input type="text" class="search-input" placeholder="Search webinars...">
+        <i class="fas fa-search search-icon"></i>
+      </div>
+
+      <div class="webinar-filters">
+        <button class="filter-btn active" data-filter="all">All</button>
+        <button class="filter-btn" data-filter="upcoming">Upcoming</button>
+        <button class="filter-btn" data-filter="recorded">Recorded</button>
+        <button class="filter-btn" data-filter="popular">Most Popular</button>
+      </div>
+
+      <div class="webinars-grid" id="webinars-grid">
+        <!-- Dynamic webinar content will be loaded here -->
+        <div class="loading-spinner">
+          <div class="spinner-container">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>Loading webinars...</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer Section -->
+  <footer>
+    <div class="footer-section">
+      <h4>Gender Smart E-Learning</h4>
+      <p>An online platform focused on promoting gender equality through digital education.</p>
+      <p>❤️ Made with care for our students</p>
+    </div>
+    <div class="footer-section">
+      <h4>Quick Links</h4>
+      <ul>
+        <li><a href="../admin_login.php">Portal</a></li>
+        <li><a href="../faculty_login.php">Faculty portal</a></li>
+      </ul>
+    </div>
+    <div class="footer-section">
+      <h4>Contact Us</h4>
+      <p>📧 gendersmart@cvsu-naic.edu.ph</p>
+      <p>📞 (046) 856 0942</p>
+      <p>📍 Cavite State University-Naic Barangay Bucana 4110 Naic Cavite</p>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 Gender Smart. All rights reserved.</p>
+    </div>
+  </footer>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Load webinars from database
+      loadWebinars();
+      
+      // Setup event listeners
+      setupEventListeners();
+    });
+
+    function loadWebinars() {
+      console.log('Loading webinars...');
+      
+      // Try multiple possible paths
+      const possiblePaths = [
+        '../BACKEND/get_webinars_simple.php',
+        '/GenderSmart/BACKEND/get_webinars_simple.php',
+        './BACKEND/get_webinars_simple.php',
+        'BACKEND/get_webinars_simple.php'
+      ];
+      
+      let currentPathIndex = 0;
+      
+      function tryNextPath() {
+        if (currentPathIndex >= possiblePaths.length) {
+          showErrorMessage('Could not find the API endpoint. Please check the file paths.');
+          return;
+        }
+        
+        const currentPath = possiblePaths[currentPathIndex];
+        console.log(`Trying path: ${currentPath}`);
+        
+        fetch(currentPath)
+          .then(response => {
+            console.log('Response status:', response.status);
+            console.log('Response headers:', response.headers);
+            
+            // Check if response is HTML (error page) instead of JSON
+            const contentType = response.headers.get('content-type');
+            if (!contentType || !contentType.includes('application/json')) {
+              return response.text().then(text => {
+                console.error('Received HTML instead of JSON:', text);
+                console.log('Trying next path...');
+                currentPathIndex++;
+                tryNextPath();
+              });
+            }
+            
+            return response.json();
+          })
+          .then(data => {
+            console.log('Webinar data received:', data);
+            if (data.success) {
+              displayWebinars(data.data);
+            } else {
+              showErrorMessage('Error loading webinars: ' + data.error);
+            }
+          })
+          .catch(error => {
+            console.error('Error loading webinars:', error);
+            console.log('Trying next path...');
+            currentPathIndex++;
+            tryNextPath();
+          });
+      }
+      
+      tryNextPath();
+    }
+
+    function displayWebinars(webinars) {
+      const webinarsGrid = document.getElementById('webinars-grid');
+      
+      if (webinars.length === 0) {
+        webinarsGrid.innerHTML = `
+          <div class="empty-state">
+            <i class="fas fa-video"></i>
+            <h3>No webinars available</h3>
+            <p>Check back later for upcoming webinars.</p>
+          </div>
+        `;
+        return;
+      }
+
+      webinarsGrid.innerHTML = '';
+      
+      webinars.forEach(webinar => {
+        const webinarCard = createWebinarCard(webinar);
+        webinarsGrid.appendChild(webinarCard);
+      });
+
+      // Setup animations after content is loaded
+      setupWebinarAnimations();
+    }
+
+    function createWebinarCard(webinar) {
+      const card = document.createElement('div');
+      card.className = 'webinar-card';
+      card.setAttribute('data-category', webinar.category);
+      
+      const webinarDate = new Date(webinar.webinar_date);
+      const formattedDate = webinarDate.toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+        hour: 'numeric',
+        minute: '2-digit'
+      });
+
+      const isUpcoming = webinar.category === 'upcoming' && webinarDate > new Date();
+      const actionButton = isUpcoming ? 
+        `<button class="register-btn" onclick="openWebinarLink('${webinar.webinar_link}')">Register Now</button>` :
+        `<button class="watch-btn" onclick="openWebinarLink('${webinar.webinar_link}')">Watch Recording</button>`;
+
+      card.innerHTML = `
+        <img src="../../image/webinars.jpg" alt="Webinar" class="webinar-image">
+        <div class="webinar-content">
+          <span class="webinar-date">${formattedDate}</span>
+          <h3 class="webinar-title">${webinar.title}</h3>
+          <p class="webinar-description">${webinar.description || 'Join us for an informative session on gender and development topics.'}</p>
+          <div class="webinar-meta">
+            <div class="webinar-speaker">
+              <img src="../../image/centric.png" alt="Speaker" class="speaker-avatar">
+              <div class="speaker-info">
+                <div class="speaker-name">${webinar.speaker_name}</div>
+                <div class="speaker-title">${webinar.speaker_title || 'Expert Speaker'}</div>
+              </div>
+            </div>
+            <div class="webinar-duration">
+              <i class="far fa-clock"></i> ${webinar.duration} mins
+            </div>
+          </div>
+          <div class="webinar-actions">
+            ${actionButton}
+            <button class="save-btn" onclick="saveWebinar(${webinar.id})">
+              <i class="far fa-bookmark"></i>
+            </button>
+          </div>
+        </div>
+      `;
+
+      return card;
+    }
+
+    function setupEventListeners() {
+      // Search functionality
+      const searchInput = document.querySelector('.search-input');
+      if (searchInput) {
+        searchInput.addEventListener('input', (e) => {
+          const searchTerm = e.target.value.toLowerCase();
+          const webinarCards = document.querySelectorAll('.webinar-card');
+          
+          webinarCards.forEach(card => {
+            const title = card.querySelector('.webinar-title').textContent.toLowerCase();
+            const description = card.querySelector('.webinar-description').textContent.toLowerCase();
+            const isVisible = title.includes(searchTerm) || description.includes(searchTerm);
+            card.style.display = isVisible ? 'block' : 'none';
+          });
+        });
+      }
+
+      // Filter functionality
+      const filterBtns = document.querySelectorAll('.filter-btn');
+      filterBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          // Remove active class from all buttons
+          filterBtns.forEach(b => b.classList.remove('active'));
+          // Add active class to clicked button
+          btn.classList.add('active');
+
+          const filter = btn.getAttribute('data-filter');
+          const webinarCards = document.querySelectorAll('.webinar-card');
+          
+          webinarCards.forEach(card => {
+            if (filter === 'all' || card.getAttribute('data-category') === filter) {
+              gsap.to(card, { opacity: 1, y: 0, duration: 0.5, display: 'block' });
+            } else {
+              gsap.to(card, { opacity: 0, y: 20, duration: 0.5, display: 'none' });
+            }
+          });
+        });
+      });
+    }
+
+    function setupWebinarAnimations() {
+      // Animate webinar cards on scroll
+      gsap.utils.toArray('.webinar-card').forEach((card, index) => {
+        gsap.from(card, {
+          scrollTrigger: {
+            trigger: card,
+            start: 'top 80%',
+          },
+          y: 50,
+          opacity: 0,
+          duration: 0.8,
+          delay: index * 0.2
+        });
+      });
+
+      // Hover animations for webinar cards
+      document.querySelectorAll('.webinar-card').forEach(card => {
+        card.addEventListener('mouseenter', () => {
+          gsap.to(card, {
+            y: -10,
+            duration: 0.3,
+            ease: 'power2.out'
+          });
+        });
+
+        card.addEventListener('mouseleave', () => {
+          gsap.to(card, {
+            y: 0,
+            duration: 0.3,
+            ease: 'power2.out'
+          });
+        });
+      });
+    }
+
+    function openWebinarLink(link) {
+      if (link && link.trim() !== '') {
+        window.open(link, '_blank');
+      } else {
+        alert('Webinar link not available yet. Please check back later.');
+      }
+    }
+
+    function saveWebinar(webinarId) {
+      // Implementation for saving webinar to user's bookmarks
+      alert('Webinar saved to your bookmarks!');
+    }
+
+    function showErrorMessage(message) {
+      const webinarsGrid = document.getElementById('webinars-grid');
+      webinarsGrid.innerHTML = `
+        <div class="error-state">
+          <i class="fas fa-exclamation-triangle"></i>
+          <h3>Error Loading Webinars</h3>
+          <p>${message}</p>
+          <button onclick="loadWebinars()" class="retry-btn">Try Again</button>
+        </div>
+      `;
+    }
+  </script>
+
+  <style>
+    /* Loading Spinner Styles */
+    .loading-spinner {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 300px;
+      width: 100%;
+    }
+
+    .spinner-container {
+      text-align: center;
+      color: #666;
+    }
+
+    .spinner-container i {
+      font-size: 48px;
+      color: #667eea;
+      margin-bottom: 20px;
+      animation: spin 1s linear infinite;
+    }
+
+    .spinner-container p {
+      font-size: 18px;
+      font-weight: 500;
+      margin: 0;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Empty State Styles */
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: #666;
+      grid-column: 1 / -1;
+    }
+
+    .empty-state i {
+      font-size: 80px;
+      color: #bdc3c7;
+      margin-bottom: 20px;
+      animation: float 3s ease-in-out infinite;
+    }
+
+    .empty-state h3 {
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 10px;
+      color: #2c3e50;
+    }
+
+    .empty-state p {
+      font-size: 16px;
+      color: #7f8c8d;
+      margin: 0;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+    }
+
+    /* Error State Styles */
+    .error-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: #e74c3c;
+      grid-column: 1 / -1;
+    }
+
+    .error-state i {
+      font-size: 80px;
+      color: #e74c3c;
+      margin-bottom: 20px;
+    }
+
+    .error-state h3 {
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 10px;
+      color: #e74c3c;
+    }
+
+    .error-state p {
+      font-size: 16px;
+      color: #7f8c8d;
+      margin-bottom: 20px;
+    }
+
+    .retry-btn {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .retry-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    }
+
+    /* Webinar Card Enhancements */
+    .webinar-card {
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      animation: fadeInUp 0.6s ease;
+    }
+
+    .webinar-card:hover {
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Filter Button Enhancements */
+    .filter-btn {
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .filter-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+      transition: left 0.5s ease;
+    }
+
+    .filter-btn:hover::before {
+      left: 100%;
+    }
+
+    .filter-btn.active {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    }
+
+    /* Search Bar Enhancements */
+    .search-input {
+      transition: all 0.3s ease;
+    }
+
+    .search-input:focus {
+      transform: scale(1.02);
+      box-shadow: 0 8px 25px rgba(102, 126, 234, 0.2);
+    }
+  </style>
+</body>
+</html>

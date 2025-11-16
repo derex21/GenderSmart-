@@ -1,0 +1,2173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>4 Pics 1 Word: Gender Edition</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #ecd450, #4a00e0);
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    /* Screen container */
+    .screen-container {
+      width: 100%;
+      max-width: 1200px;
+      height: 100%;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Screen base styles */
+    .screen {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .screen.active {
+      display: flex;
+    }
+
+    /* INTRO CARD */
+    .intro-card {
+      background: #8b5cf6;
+      color: rgb(255, 255, 255);
+      border-radius: 20px;
+      text-align: center;
+      padding: 40px 30px;
+      max-width: 550px;
+      width: 90%;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+      animation: fadeIn 0.8s ease;
+    }
+
+    .intro-title {
+      font-weight: 700;
+      font-size: 1.6rem;
+      margin-bottom: 15px;
+      color: #fff;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .intro-text {
+      color: #f3e8ff;
+      font-size: 1rem;
+      line-height: 1.6;
+      margin-bottom: 25px;
+      padding: 0 10px;
+    }
+
+    .intro-image {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 25px;
+    }
+
+    .intro-image img {
+      width: 180px;
+      height: auto;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .intro-buttons {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .btn-primary {
+      background: #4c1d95;
+      color: white;
+      border: none;
+      padding: 12px 40px;
+      border-radius: 25px;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: 0.3s ease;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn-primary:hover {
+      background: #5b21b6;
+      transform: scale(1.05);
+    }
+
+    .btn-row {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .btn-secondary {
+      background: #3b0764;
+      color: white;
+      border: none;
+      padding: 10px 22px;
+      border-radius: 25px;
+      font-weight: 500;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: 0.3s ease;
+      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+    }
+
+    .btn-secondary:hover {
+      background: #581c87;
+      transform: scale(1.05);
+    }
+
+    /* GAME SCREEN STYLES */
+    .game-horizontal {
+      display: flex;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .game-left {
+      flex: 1;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .game-right {
+      flex: 1;
+      padding: 20px;
+      background: #f8f9fa;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .level-badge {
+      background: #8b5cf6;
+      color: white;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-weight: bold;
+      align-self: flex-start;
+      margin-bottom: 20px;
+    }
+
+    .puzzle-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr 1fr;
+      gap: 15px;
+      flex: 1;
+    }
+
+    .puzzle-image {
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #e9ecef;
+    }
+
+    .puzzle-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .game-info {
+      display: flex;
+      justify-content: space-between;
+      background: white;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .info-item {
+      text-align: center;
+    }
+
+    .info-label {
+      font-size: 0.8rem;
+      color: #6c757d;
+      margin-bottom: 5px;
+    }
+
+    .info-value {
+      font-weight: bold;
+      font-size: 1.2rem;
+      color: #495057;
+    }
+
+    .progress {
+      height: 5px;
+      background: #e9ecef;
+      border-radius: 5px;
+      margin-top: 5px;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: #8b5cf6;
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    .timer-container {
+      text-align: center;
+      background: white;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .timer {
+      font-size: 2.5rem;
+      font-weight: bold;
+      color: #20c997;
+      transition: color 0.3s ease;
+    }
+
+    .timer.pulse {
+      animation: pulse 1s infinite;
+    }
+
+    .answer-container {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .answer-letters-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .answer-letters {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .letter {
+      width: 40px;
+      height: 50px;
+      border: 2px solid #8b5cf6;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      font-weight: bold;
+      background: white;
+      transition: all 0.3s ease;
+    }
+
+    .letter.empty {
+      background: #f8f9fa;
+      border-style: dashed;
+    }
+
+    .letter.celebrate {
+      animation: celebrate 0.5s ease;
+    }
+
+    .keyboard {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .key {
+      width: 40px;
+      height: 40px;
+      background: #8b5cf6;
+      color: white;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .key:hover {
+      background: #7c3aed;
+      transform: translateY(-2px);
+    }
+
+    .key.pressed {
+      background: #6d28d9;
+      transform: scale(0.95);
+    }
+
+    .key.used {
+      background: #d1d5db;
+      color: #9ca3af;
+      cursor: not-allowed;
+    }
+
+    .hint-container {
+      background: white;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .hint-text {
+      margin-bottom: 10px;
+      color: #6c757d;
+      font-style: italic;
+    }
+
+    /* FIXED GAME ACTION BUTTONS */
+    .game-action-buttons {
+      display: flex;
+      gap: 10px;
+      justify-content: space-between;
+      margin-top: auto;
+      padding-top: 20px;
+    }
+
+    .btn {
+      background: #8b5cf6;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      flex: 1;
+      justify-content: center;
+    }
+
+    .btn:hover {
+      background: #7c3aed;
+      transform: translateY(-2px);
+    }
+
+    .btn-outline {
+      background: transparent;
+      border: 2px solid #8b5cf6;
+      color: #8b5cf6;
+    }
+
+    .btn-outline:hover {
+      background: #8b5cf6;
+      color: white;
+    }
+
+    .btn-accent {
+      background: #ef4444;
+    }
+
+    .btn-accent:hover {
+      background: #dc2626;
+    }
+
+    .delete-btn {
+      background: #6b7280;
+      color: white;
+      border: none;
+      width: 50px;
+      height: 50px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      flex: 0 0 auto;
+    }
+
+    .delete-btn:hover {
+      background: #4b5563;
+      transform: translateY(-2px);
+    }
+
+    /* RESULTS SCREEN */
+    .results-screen {
+      background: white;
+      border-radius: 20px;
+      padding: 40px;
+      text-align: center;
+      max-width: 600px;
+      width: 90%;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .score {
+      font-size: 3rem;
+      font-weight: bold;
+      color: #8b5cf6;
+      margin: 20px 0;
+    }
+
+    .score.bump {
+      animation: bump 0.7s ease;
+    }
+
+    .score-text {
+      font-size: 1.2rem;
+      color: #6c757d;
+      margin-bottom: 30px;
+    }
+
+    .concept-explanation {
+      background: #f8f9fa;
+      padding: 20px;
+      border-radius: 10px;
+      margin: 20px 0;
+      text-align: left;
+    }
+
+    .concept-explanation h3 {
+      color: #8b5cf6;
+      margin-bottom: 10px;
+    }
+
+    .concept-explanation p {
+      color: #495057;
+      line-height: 1.6;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      margin-top: 30px;
+    }
+
+    /* GAME OVER SCREEN */
+    .feedback-container {
+      background: #f8f9fa;
+      padding: 20px;
+      border-radius: 10px;
+      margin: 20px 0;
+    }
+
+    .feedback-title {
+      color: #8b5cf6;
+      margin-bottom: 5px;
+    }
+
+    .feedback-subtitle {
+      color: #6c757d;
+      margin-bottom: 15px;
+      font-size: 0.9rem;
+    }
+
+    .star-rating {
+      display: flex;
+      justify-content: center;
+      gap: 5px;
+      margin: 15px 0;
+    }
+
+    .star {
+      font-size: 2rem;
+      color: #d1d5db;
+      cursor: pointer;
+      transition: color 0.2s ease;
+    }
+
+    .star.active {
+      color: #fbbf24;
+    }
+
+    .feedback-textarea {
+      width: 100%;
+      height: 100px;
+      padding: 10px;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      resize: none;
+      margin-bottom: 15px;
+      font-family: inherit;
+    }
+
+    /* MODAL STYLES */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal {
+      background: white;
+      border-radius: 15px;
+      overflow: hidden;
+      max-width: 500px;
+      width: 90%;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .modal-header {
+      background: #8b5cf6;
+      color: white;
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .modal-header.warning {
+      background: #f59e0b;
+    }
+
+    .modal-header.danger {
+      background: #ef4444;
+    }
+
+    .modal-title {
+      font-weight: bold;
+      font-size: 1.2rem;
+    }
+
+    .modal-body {
+      padding: 20px;
+    }
+
+    .modal-message {
+      margin-bottom: 20px;
+      color: #495057;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+    }
+
+    .modal-btn {
+      padding: 8px 16px;
+      border-radius: 6px;
+      border: none;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .modal-btn-primary {
+      background: #8b5cf6;
+      color: white;
+    }
+
+    .modal-btn-primary:hover {
+      background: #7c3aed;
+    }
+
+    .modal-btn-outline {
+      background: transparent;
+      border: 1px solid #8b5cf6;
+      color: #8b5cf6;
+    }
+
+    .modal-btn-outline:hover {
+      background: #8b5cf6;
+      color: white;
+    }
+
+    .modal-btn-accent {
+      background: #ef4444;
+      color: white;
+    }
+
+    .modal-btn-accent:hover {
+      background: #dc2626;
+    }
+
+    /* TUTORIAL STYLES */
+    .tutorial-slide {
+      display: none;
+      text-align: center;
+    }
+
+    .tutorial-slide.active {
+      display: block;
+    }
+
+    .tutorial-image {
+      font-size: 4rem;
+      color: #8b5cf6;
+      margin-bottom: 20px;
+    }
+
+    .tutorial-title {
+      color: #8b5cf6;
+      margin-bottom: 15px;
+    }
+
+    .tutorial-description {
+      color: #495057;
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+
+    .tutorial-progress {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin: 20px 0;
+    }
+
+    .tutorial-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #d1d5db;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+
+    .tutorial-dot.active {
+      background: #8b5cf6;
+    }
+
+    .tutorial-navigation {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    /* ANIMATIONS */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes pulse {
+      0% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.1);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+
+    @keyframes celebrate {
+      0% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.2);
+        background: #dbeafe;
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+
+    @keyframes bump {
+      0% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.3);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      .game-horizontal {
+        flex-direction: column;
+        height: 95%;
+      }
+      
+      .game-left, .game-right {
+        flex: none;
+      }
+      
+      .game-left {
+        height: 40%;
+      }
+      
+      .game-right {
+        height: 60%;
+        overflow-y: auto;
+      }
+      
+      .puzzle-container {
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: 1fr 1fr;
+      }
+      
+      .action-buttons {
+        flex-direction: column;
+      }
+      
+      .modal-actions {
+        flex-direction: column;
+      }
+      
+      .game-action-buttons {
+        flex-wrap: wrap;
+      }
+      
+      .delete-btn {
+        order: 1;
+      }
+      
+      .submit-btn {
+        order: 2;
+        flex: 2;
+      }
+      
+      .give-up-btn {
+        order: 3;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .intro-card {
+        padding: 30px 20px;
+      }
+      
+      .intro-title {
+        font-size: 1.3rem;
+      }
+      
+      .intro-text {
+        font-size: 0.95rem;
+      }
+      
+      .btn-primary {
+        padding: 10px 30px;
+        font-size: 0.95rem;
+      }
+      
+      .btn-secondary {
+        padding: 8px 18px;
+        font-size: 0.85rem;
+      }
+      
+      .letter {
+        width: 35px;
+        height: 45px;
+        font-size: 1.2rem;
+      }
+      
+      .key {
+        width: 35px;
+        height: 35px;
+      }
+      
+      .results-screen {
+        padding: 30px 20px;
+      }
+      
+      .game-action-buttons {
+        flex-direction: column;
+      }
+      
+      .delete-btn {
+        width: 100%;
+        height: 45px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="screen-container">
+    <!-- Introduction Screen -->
+    <div id="introduction-screen" class="screen active">
+      <div class="intro-card">
+        <h2 class="intro-title">Welcome to 4 Pics 1 Word: Gender Edition</h2>
+        <p class="intro-text">
+          Guess the Word, Level Up Your Awareness! Every image holds a message waiting to be uncovered. 
+          Sharpen your observation, challenge assumptions, and build awareness one puzzle at a time.
+        </p>
+
+        <div class="intro-image">
+          <img src="3.jpg" alt="4 Pics 1 Word Logo">
+        </div>
+
+        <div class="intro-buttons">
+          <button id="continue-to-game-btn" class="btn-primary">Start Game</button>
+          <div class="btn-row">
+            <button id="learn-more-first-btn" class="btn-secondary">Learn More</button>
+            <button class="btn-secondary">Back</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Learn More Screen -->
+    <div id="learn-more-screen" class="screen">
+      <div class="intro-card">
+        <h2 class="intro-title">4 pics 1 word Purpose</h2>
+        <p class="intro-text">
+          The purpose of 4 Pics 1 Word: Gender Edition is to promote gender sensitivity and awareness through an interactive and engaging learning experience. This game challenges players to analyze four related images and identify the word that connects them, each representing key concepts about gender, equality, diversity, and inclusion. By combining visual learning with problem-solving, it encourages players to think critically about social roles, stereotypes, and issues related to gender. Ultimately, the game aims to make learning about gender and development more enjoyable and meaningful, fostering empathy, understanding, and respect for all individuals regardless of gender.
+        </p>
+        
+        <div class="intro-image">
+          <img src="https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80" alt="Gender Equality">
+        </div>
+        
+        <div class="intro-buttons">
+          <button id="back-to-intro-btn" class="btn-primary">Back to Main Menu</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Game Screen -->
+    <div id="game-screen" class="screen">
+      <div class="game-horizontal">
+        <div class="game-left">
+          <div class="level-badge">Level <span id="level-badge">1</span></div>
+          <div class="puzzle-container" id="puzzle-container">
+            <!-- Puzzle images will be inserted here by JavaScript -->
+          </div>
+        </div>
+        
+        <div class="game-right">
+          <div class="game-info">
+            <div class="info-item">
+              <div class="info-label">Level</div>
+              <div class="info-value" id="level-indicator">1</div>
+              <div class="progress" title="Progress">
+                <div class="progress-bar" id="level-progress"></div>
+              </div>
+            </div>
+            <div class="info-item">
+              <div class="info-label">Score</div>
+              <div class="info-value" id="score-indicator">0</div>
+            </div>
+            <div class="info-item">
+              <div class="info-label">Hints Used</div>
+              <div class="info-value" id="hints-indicator">0</div>
+            </div>
+          </div>
+          
+          <div class="timer-container">
+            <div class="timer" id="timer">60</div>
+          </div>
+          
+          <div class="answer-container">
+            <div class="answer-letters-container">
+              <div class="answer-letters" id="answer-letters">
+                <!-- Answer letters will be inserted here by JavaScript -->
+              </div>
+              
+              <div class="keyboard" id="keyboard">
+                <!-- Keyboard letters will be inserted here by JavaScript -->
+              </div>
+            </div>
+            
+            <!-- FIXED ACTION BUTTONS -->
+            <div class="game-action-buttons">
+              <button id="delete-btn" class="delete-btn">
+                <i class="fas fa-trash"></i>
+              </button>
+              <button id="submit-btn" class="btn submit-btn">
+                <i class="fas fa-check"></i> Submit Answer
+              </button>
+              <button id="give-up-btn" class="btn btn-accent give-up-btn">
+                <i class="fas fa-flag"></i> Give Up
+              </button>
+            </div>
+          </div>
+          
+          <div class="hint-container">
+            <div class="hint-text" id="hint-text">Hint will appear here</div>
+            <button id="hint-btn" class="btn btn-outline">
+              <i class="fas fa-lightbulb"></i> Use Hint (-1 point)
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Results Screen -->
+    <div id="results-screen" class="screen">
+      <div class="results-screen">
+        <h2 id="results-title">Puzzle Complete!</h2>
+        <div class="score" id="final-score">+1</div>
+        <div class="score-text" id="score-text">You solved the puzzle!</div>
+        
+        <div class="concept-explanation">
+          <h3 id="concept-title">Concept Title</h3>
+          <p id="concept-explanation">Concept explanation will appear here.</p>
+        </div>
+        
+        <div class="action-buttons">
+          <button id="next-puzzle-btn" class="btn">
+            <i class="fas fa-forward"></i> Next Puzzle
+          </button>
+          <button id="back-to-menu-btn" class="btn btn-outline">
+            <i class="fas fa-home"></i> Back to Menu
+          </button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Game Over Screen -->
+    <div id="game-over-screen" class="screen">
+      <div class="results-screen">
+        <h2>Game Complete!</h2>
+        <div class="score" id="final-game-score">0</div>
+        <div class="score-text" id="game-over-text">Your game has ended. Great job learning about gender concepts!</div>
+        
+        <div class="feedback-container">
+          <h3 class="feedback-title">Share Your Feedback</h3>
+          <p class="feedback-subtitle">Help us improve the learning experience</p>
+          
+          <div class="star-rating">
+            <span class="star" data-rating="1">★</span>
+            <span class="star" data-rating="2">★</span>
+            <span class="star" data-rating="3">★</span>
+            <span class="star" data-rating="4">★</span>
+            <span class="star" data-rating="5">★</span>
+          </div>
+          
+          <textarea class="feedback-textarea" placeholder="What did you learn? What could be improved? Any suggestions?"></textarea>
+          
+          <div class="action-buttons">
+            <button id="submit-feedback-btn" class="btn">
+              <i class="fas fa-paper-plane"></i> Submit Feedback
+            </button>
+            <button id="skip-feedback-btn" class="btn btn-outline">
+              <i class="fas fa-forward"></i> Skip Feedback
+            </button>
+          </div>
+        </div>
+        
+        <div class="action-buttons">
+          <button id="play-again-btn" class="btn">
+            <i class="fas fa-redo"></i> Play Again
+          </button>
+          <button id="game-over-menu-btn" class="btn btn-outline">
+            <i class="fas fa-home"></i> Back to Menu
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tutorial Modal -->
+  <div class="modal-overlay" id="tutorial-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <i class="fas fa-graduation-cap"></i>
+        <div class="modal-title">Game Tutorial</div>
+      </div>
+      <div class="modal-body">
+        <!-- Slide 1: Welcome -->
+        <div class="tutorial-slide active" id="slide-1">
+          <div class="tutorial-image">
+            <i class="fas fa-gamepad"></i>
+          </div>
+          <h3 class="tutorial-title">Welcome to the Game!</h3>
+          <p class="tutorial-description">
+            Get ready to explore gender concepts through interactive puzzles. 
+            This tutorial will show you how to play the game effectively.
+          </p>
+        </div>
+
+        <!-- Slide 2: Images Explanation -->
+        <div class="tutorial-slide" id="slide-2">
+          <div class="tutorial-image">
+            <i class="fas fa-images"></i>
+          </div>
+          <h3 class="tutorial-title">Four Images, One Concept</h3>
+          <p class="tutorial-description">
+            Each puzzle shows four images that represent a common gender-related concept. 
+            Your task is to find the connecting word that describes what they have in common.
+          </p>
+        </div>
+
+        <!-- Slide 3: Letter Selection -->
+        <div class="tutorial-slide" id="slide-3">
+          <div class="tutorial-image">
+            <i class="fas fa-keyboard"></i>
+          </div>
+          <h3 class="tutorial-title">Select Letters</h3>
+          <p class="tutorial-description">
+            Click on letters from the keyboard to fill in the answer slots. 
+            Choose carefully - you need to spell the correct word!
+          </p>
+        </div>
+
+        <!-- Slide 4: Timer -->
+        <div class="tutorial-slide" id="slide-4">
+          <div class="tutorial-image">
+            <i class="fas fa-clock"></i>
+          </div>
+          <h3 class="tutorial-title">60-Second Timer</h3>
+          <p class="tutorial-description">
+            You have 60 seconds to solve each puzzle. 
+            The timer turns red when you have 10 seconds left, so work quickly!
+          </p>
+        </div>
+
+        <!-- Slide 5: Hints -->
+        <div class="tutorial-slide" id="slide-5">
+          <div class="tutorial-image">
+            <i class="fas fa-lightbulb"></i>
+          </div>
+          <h3 class="tutorial-title">Use Hints Wisely</h3>
+          <p class="tutorial-description">
+            Stuck? Use hints for extra help, but they cost 1 point each. 
+            You get multiple levels of hints if you need them.
+          </p>
+        </div>
+
+        <!-- Slide 6: Delete Button -->
+        <div class="tutorial-slide" id="slide-6">
+          <div class="tutorial-image">
+            <i class="fas fa-trash"></i>
+          </div>
+          <h3 class="tutorial-title">Fix Mistakes</h3>
+          <p class="tutorial-description">
+            Made a wrong letter choice? Use the delete button to remove the last letter you selected. 
+            The letter becomes available again for you to use.
+          </p>
+        </div>
+
+        <!-- Slide 7: Learning Objectives -->
+        <div class="tutorial-slide" id="slide-7">
+          <div class="tutorial-image">
+            <i class="fas fa-graduation-cap"></i>
+          </div>
+          <h3 class="tutorial-title">Learn While Playing</h3>
+          <p class="tutorial-description">
+            Each correct answer teaches you about important gender concepts. 
+            Read the explanations to deepen your understanding of gender studies.
+          </p>
+        </div>
+
+        <!-- Progress Dots -->
+        <div class="tutorial-progress">
+          <div class="tutorial-dot active" data-slide="1"></div>
+          <div class="tutorial-dot" data-slide="2"></div>
+          <div class="tutorial-dot" data-slide="3"></div>
+          <div class="tutorial-dot" data-slide="4"></div>
+          <div class="tutorial-dot" data-slide="5"></div>
+          <div class="tutorial-dot" data-slide="6"></div>
+          <div class="tutorial-dot" data-slide="7"></div>
+        </div>
+
+        <!-- Navigation -->
+        <div class="tutorial-navigation">
+          <button class="modal-btn modal-btn-outline" id="tutorial-prev-btn">
+            <i class="fas fa-arrow-left"></i> Previous
+          </button>
+          
+          <button class="modal-btn modal-btn-outline" id="tutorial-skip-btn">
+            <i class="fas fa-forward"></i> Skip Tutorial
+          </button>
+          
+          <button class="modal-btn modal-btn-primary" id="tutorial-next-btn">
+            Next <i class="fas fa-arrow-right"></i>
+          </button>
+          
+          <button class="modal-btn modal-btn-primary" id="tutorial-start-btn" style="display: none;">
+            <i class="fas fa-play"></i> Start Playing
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Other Modals -->
+  <div class="modal-overlay" id="incorrect-modal">
+    <div class="modal">
+      <div class="modal-header warning">
+        <i class="fas fa-exclamation-triangle"></i>
+        <div class="modal-title">Incorrect Answer</div>
+      </div>
+      <div class="modal-body">
+        <div class="modal-message">That's not quite right. Try again!</div>
+        <div class="modal-actions">
+          <button class="modal-btn modal-btn-primary" id="incorrect-ok-btn">
+            <i class="fas fa-redo"></i> Try Again
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="time-up-modal">
+    <div class="modal">
+      <div class="modal-header danger">
+        <i class="fas fa-clock"></i>
+        <div class="modal-title">Time's Up!</div>
+      </div>
+      <div class="modal-body">
+        <div class="modal-message" id="time-up-message">The correct answer was: <strong id="correct-answer"></strong></div>
+        <div class="modal-actions">
+          <button class="modal-btn modal-btn-primary" id="time-up-ok-btn">
+            <i class="fas fa-forward"></i> Continue
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="no-points-modal">
+    <div class="modal">
+      <div class="modal-header warning">
+        <i class="fas fa-exclamation-circle"></i>
+        <div class="modal-title">Not Enough Points</div>
+      </div>
+      <div class="modal-body">
+        <div class="modal-message">You don't have enough points to use a hint!</div>
+        <div class="modal-actions">
+          <button class="modal-btn modal-btn-primary" id="no-points-ok-btn">
+            <i class="fas fa-check"></i> OK
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="give-up-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <i class="fas fa-flag"></i>
+        <div class="modal-title">Give Up?</div>
+      </div>
+      <div class="modal-body">
+        <div class="modal-message">Are you sure you want to give up on this puzzle?</div>
+        <div class="modal-actions">
+          <button class="modal-btn modal-btn-accent" id="give-up-confirm-btn">
+            <i class="fas fa-check"></i> Yes, Give Up
+          </button>
+          <button class="modal-btn modal-btn-outline" id="give-up-cancel-btn">
+            <i class="fas fa-times"></i> Continue Playing
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="feedback-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <i class="fas fa-comment-alt"></i>
+        <div class="modal-title">Quick Feedback</div>
+      </div>
+      <div class="modal-body">
+        <div class="modal-message">Before you go, we'd love to hear your thoughts about the game!</div>
+        
+        <div class="star-rating">
+          <span class="star" data-rating="1">★</span>
+          <span class="star" data-rating="2">★</span>
+          <span class="star" data-rating="3">★</span>
+          <span class="star" data-rating="4">★</span>
+          <span class="star" data-rating="5">★</span>
+        </div>
+        
+        <textarea class="feedback-textarea" placeholder="Any comments or suggestions?"></textarea>
+        
+        <div class="modal-actions">
+          <button class="modal-btn modal-btn-primary" id="feedback-submit-btn">
+            <i class="fas fa-paper-plane"></i> Submit
+          </button>
+          <button class="modal-btn modal-btn-outline" id="feedback-skip-btn">
+            <i class="fas fa-times"></i> Skip
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Game data - 30 puzzles with gender-related concepts
+     const puzzles = [
+            // Level 1: GENDER
+            {
+                word: "GENDER",
+                hint: "Socially constructed roles, behaviors, and identities",
+                explanation: "Gender refers to the characteristics of women, men, girls and boys that are socially constructed. This includes norms, behaviors and roles associated with being a woman, man, girl or boy, as well as relationships with each other.",
+                images: [
+                    "GENDER/GENDER1.jpg",
+                    "GENDER/GENDER2.webp",
+                    "GENDER/GENDER3.png",  
+                    "GENDER/GENDER4.avif",  
+                ]
+            },
+            // Level 2: EQUITY
+            {
+                word: "EQUITY",
+                hint: "Fairness and justice in treatment",
+                explanation: "Gender equity means fairness of treatment for women and men, according to their respective needs. This may include equal treatment or treatment that is different but considered equivalent in terms of rights, benefits, obligations and opportunities.",
+                images: [
+                    "EQUITY/EQUITY1.webp",
+                    "EQUITY/EQUITY2.jpg",
+                    "EQUITY/EQUITY3.png",  
+                    "EQUITY/EQUITY4.webp",  
+                ]
+            },
+            // Level 3: FEMINISM
+            {
+                word: "FEMINISM",
+                hint: "Movement for gender equality",
+                explanation: "Feminism is a range of social movements, political movements, and ideologies that aim to define and establish the political, economic, personal, and social equality of the sexes.",
+                images: [
+                    "FEMINISM/FEMINISM1.jpg",
+                    "FEMINISM/FEMINISM2.jpg",
+                    "FEMINISM/FEMINISM3.jpg",  
+                    "FEMINISM/FEMINISM4.jpg",  
+                ]
+            },
+            // Level 4: SEXISM
+            {
+                word: "SEXISM",
+                hint: "Discrimination based on gender",
+                explanation: "Sexism is prejudice or discrimination based on a person's sex or gender. It can affect anyone, but it primarily affects women and girls. It has been linked to stereotypes and gender roles.",
+                images: [
+                    "SEXISM/SEXISM1.jpg",
+                    "SEXISM/SEXISM2.jpg",
+                    "SEXISM/SEXISM3.jpg",  
+                    "SEXISM/SEXISM4.png",  
+                ]
+            },
+            // Level 5: EQUALITY
+            {
+                word: "EQUALITY",
+                hint: "State of being equal in status, rights, and opportunities",
+                explanation: "Gender equality is the state of equal ease of access to resources and opportunities regardless of gender, including economic participation and decision-making.",
+                images: [
+                    "EQUALITY/EQUALITY1.jpg",
+                    "EQUALITY/EQUALITY0.webp",
+                    "EQUALITY/EQUALITY1 (1).jpg",  
+                    "EQUALITY/EQUALITY1 (2).webp",  
+                ]
+            },
+            // Level 6: PATRIARCHY
+            {
+                word: "PATRIARCHY",
+                hint: "Social system with male dominance",
+                explanation: "Patriarchy is a social system in which men hold primary power and predominate in roles of political leadership, moral authority, social privilege and control of property.",
+                images: [
+                   "PATRIARCHY/PATRIARCHY1.jpg",
+                   "PATRIARCHY/PATRIARCHY2.jpg",
+                   "PATRIARCHY/PATRIARCHY3.jpg",  
+                   "PATRIARCHY/PATRIARCHY4.avif",  
+                ]
+            },
+            // Level 7: INTERSECTIONALITY
+            {
+                word: "INTERSECTIONALITY",
+                hint: "Overlapping social identities and related systems of discrimination",
+                explanation: "Intersectionality is an analytical framework for understanding how aspects of a person's social and political identities combine to create different modes of discrimination and privilege.",
+                images: [
+                   "INTERSECTIONALITY/INTERSECTIONALITY1.jpg",
+                   "INTERSECTIONALITY/INTERSECTIONALITY2.webp",
+                   "INTERSECTIONALITY/INTERSECTIONALITY3.png",  
+                   "INTERSECTIONALITY/INTERSECTIONALITY4.webp",  
+                ]
+            },
+            // Level 8: EXPRESSION
+            {
+                word: "EXPRESSION",
+                hint: "How one presents gender externally",
+                explanation: "Gender expression refers to the way a person presents their gender to the world, which may include behavior, clothing, haircut, voice, and other forms of presentation.",
+                images: [
+                    "EXPRESSION/EXPRESSION 1.avif",
+                    "EXPRESSION/EXPRESSION 2.jpg",
+                    "EXPRESSION/EXPRESSION 3.avif",  
+                    "EXPRESSION/EXPRESSION 4.avif",  
+                ]
+            },
+            // Level 9: IDENTITY
+            {
+                word: "IDENTITY",
+                hint: "One's internal sense of their own gender",
+                explanation: "Gender identity is the personal sense of one's own gender. Gender identity can correlate with a person's assigned sex at birth or can differ from it.",
+                images: [
+                    "IDENTITY/IDENTITY1.jpg",
+                    "IDENTITY/IDENTITY2.jpg",
+                    "IDENTITY/IDENTITY3.png",  
+                    "IDENTITY/IDENTITY4.webp",  
+                ]
+            },
+            // Level 10: STEREOTYPE
+            {
+                word: "STEREOTYPE",
+                hint: "Oversimplified idea about a particular group",
+                explanation: "A gender stereotype is a generalized view or preconception about attributes or characteristics that are or ought to be possessed by women and men or the roles that are or should be performed by them.",
+                images: [
+                   "STEREOTYPE/STEREOTYPE1.avif",
+                   "STEREOTYPE/STEREOTYPE2.jpg",
+                   "STEREOTYPE/STEREOTYPE3.jpg",  
+                   "STEREOTYPE/STEREOTYPE4.jpg",  
+                ]
+            },
+            // Level 11: BINARY
+            {
+                word: "BINARY",
+                hint: "Classification system with only two options",
+                explanation: "The gender binary is the classification of gender into two distinct, opposite forms of masculine and feminine.",
+                images: [
+                   "Binary/Binary 1.jpg",
+                   "Binary/Binary 2.jpg",
+                   "Binary/Binary 3.jpg",  
+                   "Binary/Binary 4.jpg",  
+                ]
+            },
+            // Level 12: NONBINARY
+            {
+                word: "NONBINARY",
+                hint: "Gender identity outside the male/female binary",
+                explanation: "Non-binary is an umbrella term for gender identities that fall outside the gender binary of male and female.",
+                images: [
+                   "Non binary/Non binary 1.jpg",
+                   "Non binary/Non binary 2.jpg",
+                   "Non binary/Non binary 3.jpg",  
+                   "Non binary/Non binary 4.jpg",  
+                ]
+            },
+            // Level 13: TRANSGENDER
+            {
+                word: "TRANSGENDER",
+                hint: "Gender identity differs from sex assigned at birth",
+                explanation: "Transgender is an umbrella term for people whose gender identity differs from the sex they were assigned at birth.",
+                images: [
+                   "TRANSGENDER/TRANSGENDER1.avif",
+                   "TRANSGENDER/TRANSGENDER2.avif",
+                   "TRANSGENDER/TRANSGENDER3.webp",  
+                   "TRANSGENDER/TRANSGENDER4.avif",  
+                ]
+            },
+            // Level 14: CISGENDER
+            {
+                word: "CISGENDER",
+                hint: "Gender identity matches sex assigned at birth",
+                explanation: "Cisgender refers to individuals whose gender identity matches the sex they were assigned at birth.",
+                images: [
+                   "CISGENDER/CISGENDER1.png",
+                   "CISGENDER/CISGENDER2.webp",
+                   "CISGENDER/CISGENDER3.jpg",  
+                   "CISGENDER/CISGENDER4.webp",  
+                ]
+            },
+            // Level 15: ANDROGYNY
+            {
+                word: "ANDROGYNY",
+                hint: "Combination of masculine and feminine characteristics",
+                explanation: "Androgyny is the combination of masculine and feminine characteristics into an ambiguous form.",
+                images: [
+                   "ANDROGYNY/ANDROGYNY1.webp",
+                   "ANDROGYNY/ANDROGYNY2.jpg",
+                   "ANDROGYNY/ANDROGYNY3.jpg",  
+                   "ANDROGYNY/ANDROGYNY4.jpg",  
+                ]
+            },
+            // Level 16: PREJUDICE
+            {
+                word: "PREJUDICE",
+                hint: "Preconceived opinion not based on reason",
+                explanation: "Prejudice refers to preconceived opinions or attitudes about a person or group that are not based on actual experience or reason.",
+                images: [
+                  "Prejudice/Prejudice 1.jpg",
+                  "Prejudice/Prejudice 2.jpg",
+                  "Prejudice/Prejudice 3.jpg",  
+                  "Prejudice/Prejudice 4.webp",  
+                ]
+            },
+            // Level 17: DIVERSITY
+            {
+                word: "DIVERSITY",
+                hint: "Inclusion of different types of people",
+                explanation: "Diversity refers to the presence of differences within a given setting, including race, ethnicity, gender, sexual orientation, age, social class, physical ability, and religious beliefs.",
+                images: [
+                   "Diversity/Diversity 1.png",
+                   "Diversity/Diversity 2.jpg",
+                   "Diversity/Diversity 3.png",  
+                   "Diversity/Diversity 4.jpg",  
+                ]
+            },
+            // Level 18: INCLUSION
+            {
+                word: "INCLUSION",
+                hint: "Practice of ensuring people feel valued",
+                explanation: "Inclusion is the practice of creating environments where any individual or group can be and feel welcomed, respected, supported, and valued to fully participate.",
+                images: [
+                  "Inclusion/Inclusion 1.jpg",
+                  "Inclusion/Inclusion 2.jpg",
+                  "Inclusion/Inclusion 3.jpg",  
+                  "Inclusion/Inclusion 4.png",  
+                ]
+            },
+            // Level 19: ALLYSHIP
+            {
+                word: "ALLYSHIP",
+                hint: "Support for marginalized groups",
+                explanation: "Allyship refers to the practice of emphasizing social justice, inclusion, and human rights by members of an ingroup, to advance the interests of an oppressed or marginalized outgroup.",
+                images: [
+                  "ALLYSHIP/Alliance 1.jpg",
+                  "ALLYSHIP/Alliance 2.png",
+                  "ALLYSHIP/Alliance 3.png",  
+                  "ALLYSHIP/Alliance 4.png",  
+                ]
+            },
+            // Level 20: PRIVILEGE
+            {
+                word: "PRIVILEGE",
+                hint: "Unearned advantages based on group membership",
+                explanation: "Privilege refers to unearned social power, advantages, or immunity granted to people based on their membership in a dominant social group.",
+                images: [
+                   "PRIVILEGE/Privilege 1.png",
+                   "Privilege/Privilege 2.jpg",
+                   "Privilege/Privilege 3.jpg",  
+                   "Privilege/Privilege 4.jpg",  
+                ]
+            },
+            // Level 21: OPPRESSION
+            {
+                word: "OPPRESSION",
+                hint: "Systemic and pervasive discrimination",
+                explanation: "Oppression refers to the systemic and pervasive nature of social inequality woven throughout social institutions as well as embedded within individual consciousness.",
+                images: [
+                  "Oppression/Oppression 1.jpg",
+                  "Oppression/Oppression 2.jpg",
+                  "Oppression/Oppression 3.png",  
+                  "Oppression/Oppression 4.jpg",  
+                ]
+            },
+            // Level 22: EMPOWERMENT
+            {
+                word: "EMPOWERMENT",
+                hint: "Increasing political, social, or economic strength",
+                explanation: "Empowerment is the process of increasing the capacity of individuals or groups to make choices and to transform those choices into desired actions and outcomes.",
+                images: [
+                  "EMPOWERMENT/Empowerment 1.jpg",
+                  "Empowerment/Empowerment 2.jpg",
+                  "Empowerment/Empowerment 3.jpg",  
+                  "Empowerment/Empowerment 4.jpg",  
+                ]
+            },
+            // Level 23: SOLIDARITY
+            {
+                word: "SOLIDARITY",
+                hint: "Unity based on common interests or objectives",
+                explanation: "Solidarity refers to unity or agreement of feeling or action, especially among individuals with a common interest; mutual support within a group.",
+                images: [
+                  "SOLIDARITY/Solidarity 1.jpg",
+                  "Solidarity/Solidarity 2.jpg",
+                  "Solidarity/Solidarity 3.jpg",  
+                  "Solidarity/Solidarity 4.jpg",  
+                ]
+            },
+            // Level 24: ADVOCACY
+            {
+                word: "ADVOCACY",
+                hint: "Active support for a cause or policy",
+                explanation: "Advocacy means actively supporting a cause or proposal, and speaking out in support of something, especially for social justice issues.",
+                images: [
+                  "Advocacy/Advocacy 1.png",
+                  "Advocacy/Advocacy 2.jpg",
+                  "Advocacy/Advocacy 3.png",  
+                  "Advocacy/Advocacy 4.jpg",  
+                ]
+            },
+            // Level 25: INCLUSIVITY
+            {
+                word: "INCLUSIVITY",
+                hint: "Practice of including people who might otherwise be excluded",
+                explanation: "Inclusivity is the practice or policy of providing equal access to opportunities and resources for people who might otherwise be excluded or marginalized.",
+                images: [
+                  "Inclusivity/Inclusivity 1.jpg",
+                  "Inclusivity/Inclusivity 2.jpg",
+                  "Inclusivity/Inclusivity 3.png",  
+                  "Inclusivity/Inclusivity 4.jpg",  
+                ]
+            },
+            // Level 26: TOLERANCE
+            {
+                word: "TOLERANCE",
+                hint: "Willingness to accept feelings, habits, or beliefs",
+                explanation: "Tolerance is the ability or willingness to tolerate the existence of opinions or behavior that one dislikes or disagrees with.",
+                images: [
+                  "Tolerance/Tolerance 1.jpg",
+                  "Tolerance/Tolerance 2.jpg",
+                  "Tolerance/Tolerance 3.jpg",  
+                  "Tolerance/Tolerance 4.jpg",  
+                ]
+            },
+            // Level 27: EMPATHY
+            {
+                word: "EMPATHY",
+                hint: "Ability to understand others' feelings",
+                explanation: "Empathy is the capacity to understand or feel what another person is experiencing from within their frame of reference, that is, the capacity to place oneself in another's position.",
+                images: [
+                   "Empathy/Empathy 1.jpg",
+                   "Empathy/Empathy 2.jpg",
+                   "Empathy/Empathy 3.jpg",  
+                   "Empathy/Empathy 4.jpg",  
+                ]
+            },
+            // Level 28: JUSTICE
+            {
+                word: "JUSTICE",
+                hint: "Concept of moral rightness based on ethics",
+                explanation: "Social justice is the concept of fair and just relations between the individual and society, measured by the distribution of wealth, opportunities, and social privileges.",
+                images: [
+                   "JUSTICE/Justice 1.jpg",
+                   "Justice/Justice 2.jpg",
+                   "Justice/Justice 3.jpg",  
+                   "Justice/Justice 4.jpg",  
+                ]
+            },
+            // Level 29: RESPECT
+            {
+                word: "RESPECT",
+                hint: "Consideration for the feelings and rights of others",
+                explanation: "Respect is a positive feeling or action shown towards someone or something considered important, or held in high esteem or regard.",
+                images: [
+                   "Respect/Respect 1.jpg",
+                   "Respect/Respect 2.jpg",
+                   "Respect/Respect 3.jpg",  
+                   "Respect/Respect 4.jpg",  
+                ]
+            },
+            // Level 30: AWARENESS
+            {
+                word: "AWARENESS",
+                hint: "Conscious knowledge and understanding",
+                explanation: "Awareness refers to conscious knowledge and understanding of social issues, power dynamics, and systemic inequalities that affect different groups in society.",
+                images: [
+                   "Awareness/Awareness 1.jpg",
+                   "Awareness/Awareness 2.jpg",
+                   "Awareness/Awareness 3.jpg",  
+                   "Awareness/Awareness 4.jpg",  
+                ]
+            }
+        ];
+
+    // Game state
+    let currentLevel = 1;
+    let currentPuzzle = null;
+    let selectedLetters = [];
+    let availableLetters = [];
+    let score = 0;
+    let hintsUsed = 0;
+    let timer;
+    let timeLeft = 60;
+    let gameActive = true;
+    let usedKeys = new Map();
+    let userRating = 0;
+    let currentTutorialSlide = 1;
+    const totalTutorialSlides = 7;
+
+    // DOM elements
+    const introductionScreen = document.getElementById('introduction-screen');
+    const learnMoreScreen = document.getElementById('learn-more-screen');
+    const gameScreen = document.getElementById('game-screen');
+    const resultsScreen = document.getElementById('results-screen');
+    const gameOverScreen = document.getElementById('game-over-screen');
+    
+    const continueToGameBtn = document.getElementById('continue-to-game-btn');
+    const learnMoreFirstBtn = document.getElementById('learn-more-first-btn');
+    const backToIntroBtn = document.getElementById('back-to-intro-btn');
+    const hintBtn = document.getElementById('hint-btn');
+    const submitBtn = document.getElementById('submit-btn');
+    const giveUpBtn = document.getElementById('give-up-btn');
+    const deleteBtn = document.getElementById('delete-btn');
+    const nextPuzzleBtn = document.getElementById('next-puzzle-btn');
+    const backToMenuBtn = document.getElementById('back-to-menu-btn');
+    const playAgainBtn = document.getElementById('play-again-btn');
+    const gameOverMenuBtn = document.getElementById('game-over-menu-btn');
+    const submitFeedbackBtn = document.getElementById('submit-feedback-btn');
+    const skipFeedbackBtn = document.getElementById('skip-feedback-btn');
+    
+    const levelIndicator = document.getElementById('level-indicator');
+    const levelBadge = document.getElementById('level-badge');
+    const scoreIndicator = document.getElementById('score-indicator');
+    const hintsIndicator = document.getElementById('hints-indicator');
+    const timerDisplay = document.getElementById('timer');
+    const levelProgress = document.getElementById('level-progress');
+    const puzzleContainer = document.getElementById('puzzle-container');
+    const answerLetters = document.getElementById('answer-letters');
+    const keyboard = document.getElementById('keyboard');
+    const hintText = document.getElementById('hint-text');
+    const finalScore = document.getElementById('final-score');
+    const scoreText = document.getElementById('score-text');
+    const resultsTitle = document.getElementById('results-title');
+    const conceptTitle = document.getElementById('concept-title');
+    const conceptExplanation = document.getElementById('concept-explanation');
+    const finalGameScore = document.getElementById('final-game-score');
+    const gameOverText = document.getElementById('game-over-text');
+
+    // Tutorial elements
+    const tutorialModal = document.getElementById('tutorial-modal');
+    const tutorialPrevBtn = document.getElementById('tutorial-prev-btn');
+    const tutorialNextBtn = document.getElementById('tutorial-next-btn');
+    const tutorialSkipBtn = document.getElementById('tutorial-skip-btn');
+    const tutorialStartBtn = document.getElementById('tutorial-start-btn');
+    const tutorialDots = document.querySelectorAll('.tutorial-dot');
+
+    // Modal elements
+    const incorrectModal = document.getElementById('incorrect-modal');
+    const timeUpModal = document.getElementById('time-up-modal');
+    const noPointsModal = document.getElementById('no-points-modal');
+    const giveUpModal = document.getElementById('give-up-modal');
+    const feedbackModal = document.getElementById('feedback-modal');
+    
+    const incorrectOkBtn = document.getElementById('incorrect-ok-btn');
+    const timeUpOkBtn = document.getElementById('time-up-ok-btn');
+    const noPointsOkBtn = document.getElementById('no-points-ok-btn');
+    const giveUpConfirmBtn = document.getElementById('give-up-confirm-btn');
+    const giveUpCancelBtn = document.getElementById('give-up-cancel-btn');
+    const feedbackSubmitBtn = document.getElementById('feedback-submit-btn');
+    const feedbackSkipBtn = document.getElementById('feedback-skip-btn');
+    const correctAnswer = document.getElementById('correct-answer');
+
+    // Event listeners
+    continueToGameBtn.addEventListener('click', showTutorial);
+    learnMoreFirstBtn.addEventListener('click', showLearnMore);
+    backToIntroBtn.addEventListener('click', showIntroduction);
+    hintBtn.addEventListener('click', showHint);
+    submitBtn.addEventListener('click', checkAnswer);
+    giveUpBtn.addEventListener('click', showGiveUpModal);
+    deleteBtn.addEventListener('click', deleteLastLetter);
+    nextPuzzleBtn.addEventListener('click', nextPuzzle);
+    backToMenuBtn.addEventListener('click', showIntroduction);
+    playAgainBtn.addEventListener('click', playAgain);
+    gameOverMenuBtn.addEventListener('click', showIntroduction);
+    submitFeedbackBtn.addEventListener('click', submitFeedback);
+    skipFeedbackBtn.addEventListener('click', skipFeedback);
+
+    // Tutorial event listeners
+    tutorialPrevBtn.addEventListener('click', previousTutorialSlide);
+    tutorialNextBtn.addEventListener('click', nextTutorialSlide);
+    tutorialSkipBtn.addEventListener('click', skipTutorial);
+    tutorialStartBtn.addEventListener('click', startGame);
+
+    // Tutorial dot click events
+    tutorialDots.forEach(dot => {
+      dot.addEventListener('click', function() {
+        const slideNumber = parseInt(this.getAttribute('data-slide'));
+        goToTutorialSlide(slideNumber);
+      });
+    });
+
+    // Modal event listeners
+    incorrectOkBtn.addEventListener('click', () => {
+      hideModal(incorrectModal);
+      resetSelection();
+    });
+    timeUpOkBtn.addEventListener('click', () => {
+      hideModal(timeUpModal);
+      showFeedbackModal();
+    });
+    noPointsOkBtn.addEventListener('click', () => hideModal(noPointsModal));
+    giveUpConfirmBtn.addEventListener('click', () => {
+      hideModal(giveUpModal);
+      showFeedbackModal();
+    });
+    giveUpCancelBtn.addEventListener('click', () => {
+      hideModal(giveUpModal);
+      if (timeLeft > 0 && gameActive) {
+        timer = setInterval(updateTimer, 1000);
+      }
+    });
+    feedbackSubmitBtn.addEventListener('click', submitFeedback);
+    feedbackSkipBtn.addEventListener('click', skipFeedback);
+
+    // Star rating functionality
+    document.querySelectorAll('.star').forEach(star => {
+      star.addEventListener('click', function() {
+        const rating = parseInt(this.getAttribute('data-rating'));
+        userRating = rating;
+        
+        // Update star display
+        const stars = this.parentElement.querySelectorAll('.star');
+        stars.forEach((s, index) => {
+          if (index < rating) {
+            s.classList.add('active');
+          } else {
+            s.classList.remove('active');
+          }
+        });
+      });
+    });
+
+    // Tutorial functions
+    function showTutorial() {
+      currentTutorialSlide = 1;
+      updateTutorialDisplay();
+      showModal(tutorialModal);
+    }
+
+    function updateTutorialDisplay() {
+      // Hide all slides
+      document.querySelectorAll('.tutorial-slide').forEach(slide => {
+        slide.classList.remove('active');
+      });
+      
+      // Show current slide
+      document.getElementById(`slide-${currentTutorialSlide}`).classList.add('active');
+      
+      // Update progress dots
+      tutorialDots.forEach(dot => {
+        const slideNumber = parseInt(dot.getAttribute('data-slide'));
+        dot.classList.toggle('active', slideNumber === currentTutorialSlide);
+      });
+      
+      // Update navigation buttons
+      tutorialPrevBtn.style.display = currentTutorialSlide === 1 ? 'none' : 'flex';
+      tutorialNextBtn.style.display = currentTutorialSlide === totalTutorialSlides ? 'none' : 'flex';
+      tutorialStartBtn.style.display = currentTutorialSlide === totalTutorialSlides ? 'flex' : 'none';
+    }
+
+    function nextTutorialSlide() {
+      if (currentTutorialSlide < totalTutorialSlides) {
+        currentTutorialSlide++;
+        updateTutorialDisplay();
+      }
+    }
+
+    function previousTutorialSlide() {
+      if (currentTutorialSlide > 1) {
+        currentTutorialSlide--;
+        updateTutorialDisplay();
+      }
+    }
+
+    function goToTutorialSlide(slideNumber) {
+      currentTutorialSlide = slideNumber;
+      updateTutorialDisplay();
+    }
+
+    function skipTutorial() {
+      hideModal(tutorialModal);
+      startGame();
+    }
+
+    // Modal functions
+    function showModal(modal) {
+      modal.classList.add('active');
+    }
+
+    function hideModal(modal) {
+      modal.classList.remove('active');
+    }
+
+    function showIntroduction() {
+      clearInterval(timer);
+      gameActive = false;
+      showScreen(introductionScreen);
+    }
+
+    function showLearnMore() {
+      showScreen(learnMoreScreen);
+    }
+
+    function showScreen(screen) {
+      // Hide all screens
+      introductionScreen.classList.remove('active');
+      learnMoreScreen.classList.remove('active');
+      gameScreen.classList.remove('active');
+      resultsScreen.classList.remove('active');
+      gameOverScreen.classList.remove('active');
+      
+      // Show the requested screen
+      screen.classList.add('active');
+    }
+
+    function showFeedbackModal() {
+      userRating = 0;
+      // Reset stars
+      document.querySelectorAll('.star').forEach(star => {
+        star.classList.remove('active');
+      });
+      showModal(feedbackModal);
+    }
+
+    function submitFeedback() {
+      const feedbackText = document.querySelector('.feedback-textarea').value;
+      
+      // In a real application, you would send this data to a server
+      console.log('User Rating:', userRating);
+      console.log('User Feedback:', feedbackText);
+      
+      // Show thank you message
+      alert('Thank you for your feedback! Your input helps us improve the learning experience.');
+      
+      hideModal(feedbackModal);
+      
+      // After submitting feedback, go back to Student Dashboard (games section)
+      // window.location.href = '../student_dashboard.html#game';
+      showIntroduction(); // For demo purposes, just go back to intro
+    }
+
+    function skipFeedback() {
+      hideModal(feedbackModal);
+      
+      // After skipping feedback, go back to Student Dashboard (games section)
+      // window.location.href = '../student_dashboard.html#game';
+      showIntroduction(); // For demo purposes, just go back to intro
+    }
+
+    // Game functions
+    function startGame() {
+      hideModal(tutorialModal);
+      currentLevel = 1;
+      score = 0;
+      hintsUsed = 0;
+      gameActive = true;
+      shufflePuzzles();
+      loadPuzzle();
+      showScreen(gameScreen);
+    }
+
+    function playAgain() {
+      currentLevel = 1;
+      score = 0;
+      hintsUsed = 0;
+      gameActive = true;
+      shufflePuzzles();
+      loadPuzzle();
+      showScreen(gameScreen);
+    }
+
+    function shufflePuzzles() {
+      for (let i = puzzles.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [puzzles[i], puzzles[j]] = [puzzles[j], puzzles[i]];
+      }
+    }
+
+    function loadPuzzle() {
+      if (!gameActive) return;
+      
+      const puzzleIndex = (currentLevel - 1) % puzzles.length;
+      currentPuzzle = puzzles[puzzleIndex];
+      selectedLetters = [];
+      usedKeys.clear();
+      
+      let baseLetters = currentPuzzle.word.split('');
+      
+      const extraLettersCount = Math.min(8, Math.floor(currentLevel / 2) + 3);
+      for (let i = 0; i < extraLettersCount; i++) {
+        const randomLetter = String.fromCharCode(65 + Math.floor(Math.random() * 26));
+        baseLetters.push(randomLetter);
+      }
+      
+      availableLetters = shuffleArray([...baseLetters]);
+      hintsUsed = 0;
+      timeLeft = 60;
+      
+      levelIndicator.textContent = currentLevel;
+      levelBadge.textContent = currentLevel;
+      scoreIndicator.textContent = score;
+      hintsIndicator.textContent = hintsUsed;
+      timerDisplay.textContent = timeLeft;
+      // Timer color resets to calm and shifts as time decreases
+      timerDisplay.style.color = '#20c997';
+      timerDisplay.classList.remove('pulse');
+      hintText.textContent = `Hint: ${currentPuzzle.hint}`;
+      // Update level progress bar
+      const progressPercent = Math.min(100, Math.round((currentLevel - 1) / puzzles.length * 100));
+      if (levelProgress) levelProgress.style.width = progressPercent + '%';
+      
+      clearInterval(timer);
+      timer = setInterval(updateTimer, 1000);
+      
+      puzzleContainer.innerHTML = '';
+      currentPuzzle.images.forEach(imageUrl => {
+        const imageDiv = document.createElement('div');
+        imageDiv.classList.add('puzzle-image');
+        
+        const img = document.createElement('img');
+        img.src = imageUrl;
+        img.alt = "Puzzle image";
+        img.loading = "lazy";
+        
+        imageDiv.appendChild(img);
+        puzzleContainer.appendChild(imageDiv);
+      });
+      
+      answerLetters.innerHTML = '';
+      for (let i = 0; i < currentPuzzle.word.length; i++) {
+        const letterDiv = document.createElement('div');
+        letterDiv.classList.add('letter', 'empty');
+        
+        if (currentPuzzle.word.length > 10) {
+          letterDiv.classList.add('x-small');
+        } else if (currentPuzzle.word.length > 7) {
+          letterDiv.classList.add('small');
+        }
+        
+        letterDiv.dataset.index = i;
+        answerLetters.appendChild(letterDiv);
+      }
+      
+      keyboard.innerHTML = '';
+      availableLetters.forEach(letter => {
+        const keyDiv = document.createElement('div');
+        keyDiv.classList.add('key');
+        keyDiv.textContent = letter;
+        keyDiv.addEventListener('click', () => selectLetter(letter, keyDiv));
+        keyboard.appendChild(keyDiv);
+      });
+    }
+
+    function updateTimer() {
+      if (!gameActive) return;
+      
+      timeLeft--;
+      timerDisplay.textContent = timeLeft;
+      
+      if (timeLeft <= 10) {
+        timerDisplay.style.color = '#ef4444';
+        timerDisplay.classList.add('pulse');
+      } else if (timeLeft <= 20) {
+        timerDisplay.style.color = '#ffc107';
+        timerDisplay.classList.add('pulse');
+      } else if (timeLeft <= 40) {
+        timerDisplay.style.color = '#06d6a0';
+        timerDisplay.classList.remove('pulse');
+      } else {
+        timerDisplay.style.color = '#20c997';
+        timerDisplay.classList.remove('pulse');
+      }
+      
+      if (timeLeft <= 0) {
+        clearInterval(timer);
+        timeUp();
+      }
+    }
+
+    function timeUp() {
+      correctAnswer.textContent = currentPuzzle.word;
+      showModal(timeUpModal);
+    }
+
+    function endGame() {
+      gameActive = false;
+      clearInterval(timer);
+      finalGameScore.textContent = score;
+      gameOverText.textContent = `Your final score is ${score}. Great job learning about gender concepts!`;
+      showScreen(gameOverScreen);
+    }
+
+    function selectLetter(letter, keyElement) {
+      if (!gameActive) return;
+      if (selectedLetters.length >= currentPuzzle.word.length) return;
+      
+      selectedLetters.push(letter);
+      keyElement.classList.add('pressed', 'used');
+      keyElement.style.pointerEvents = 'none';
+      
+      const emptySlots = document.querySelectorAll('.letter.empty');
+      if (emptySlots.length > 0) {
+        const slotIndex = currentPuzzle.word.length - emptySlots.length;
+        emptySlots[0].textContent = letter;
+        emptySlots[0].classList.remove('empty');
+        emptySlots[0].classList.add('celebrate');
+        
+        usedKeys.set(slotIndex, keyElement);
+        
+        setTimeout(() => {
+          emptySlots[0].classList.remove('celebrate');
+        }, 500);
+      }
+    }
+
+    function deleteLastLetter() {
+      if (!gameActive) return;
+      if (selectedLetters.length === 0) return;
+      
+      selectedLetters.pop();
+      
+      const filledSlots = document.querySelectorAll('.letter:not(.empty)');
+      if (filledSlots.length > 0) {
+        const lastSlot = filledSlots[filledSlots.length - 1];
+        lastSlot.textContent = '';
+        lastSlot.classList.add('empty');
+        
+        const slotIndex = currentPuzzle.word.length - filledSlots.length;
+        const keyElement = usedKeys.get(slotIndex);
+        if (keyElement) {
+          keyElement.classList.remove('used');
+          keyElement.classList.remove('pressed');
+          keyElement.style.pointerEvents = 'auto';
+          usedKeys.delete(slotIndex);
+        }
+      }
+    }
+
+    function checkAnswer() {
+      if (!gameActive) return;
+      
+      const userAnswer = selectedLetters.join('');
+      
+      if (userAnswer === currentPuzzle.word) {
+        clearInterval(timer);
+        score += 1;
+        showResults(true);
+      } else {
+        showModal(incorrectModal);
+      }
+    }
+
+    function resetSelection() {
+      selectedLetters = [];
+      usedKeys.clear();
+      
+      const answerSlots = document.querySelectorAll('.letter');
+      answerSlots.forEach(slot => {
+        slot.textContent = '';
+        slot.classList.add('empty');
+        slot.classList.remove('celebrate');
+      });
+      
+      const keys = document.querySelectorAll('.key');
+      keys.forEach(key => {
+        key.classList.remove('used');
+        key.style.pointerEvents = 'auto';
+      });
+    }
+
+    function showResults(isSuccess) {
+      if (isSuccess) {
+        resultsTitle.textContent = "Puzzle Complete!";
+        finalScore.textContent = "+1";
+        finalScore.classList.add('bump');
+        scoreText.textContent = `You solved the puzzle! Your score is now ${score}.`;
+        conceptTitle.textContent = currentPuzzle.word;
+        conceptExplanation.textContent = currentPuzzle.explanation;
+      } else {
+        resultsTitle.textContent = "Puzzle Failed";
+        finalScore.textContent = "+0";
+        scoreText.textContent = `You didn't solve the puzzle. Your score is ${score}.`;
+        conceptTitle.textContent = currentPuzzle.word;
+        conceptExplanation.textContent = currentPuzzle.explanation;
+      }
+      showScreen(resultsScreen);
+      setTimeout(() => finalScore.classList.remove('bump'), 700);
+    }
+
+    function nextPuzzle() {
+      if (!gameActive) return;
+      
+      currentLevel++;
+      if (currentLevel > puzzles.length) {
+        endGame();
+        return;
+      }
+      
+      loadPuzzle();
+      showScreen(gameScreen);
+    }
+
+    function showHint() {
+      if (!gameActive) return;
+      if (score <= 0) {
+        showModal(noPointsModal);
+        return;
+      }
+      
+      hintsUsed++;
+      score -= 1;
+      
+      scoreIndicator.textContent = score;
+      hintsIndicator.textContent = hintsUsed;
+      
+      const additionalHints = [
+        `The word has ${currentPuzzle.word.length} letters`,
+        `The first letter is "${currentPuzzle.word[0]}"`,
+        `The word relates to: ${currentPuzzle.explanation.substring(0, 100)}...`
+      ];
+      
+      if (hintsUsed <= additionalHints.length) {
+        hintText.textContent = `Extra Hint: ${additionalHints[hintsUsed - 1]}`;
+      } else {
+        hintBtn.disabled = true;
+        hintBtn.textContent = "No More Hints";
+      }
+    }
+
+    function showGiveUpModal() {
+      if (!gameActive) return;
+      
+      clearInterval(timer);
+      showModal(giveUpModal);
+    }
+
+    // Utility function to shuffle array
+    function shuffleArray(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+  </script>
+</body>
+</html>

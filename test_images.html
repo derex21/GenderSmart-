@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Test - Gender Smart</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #f5f5f5;
+        }
+        .test-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .image-test {
+            margin: 20px 0;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+        }
+        .image-test h3 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .image-test img {
+            max-width: 200px;
+            height: auto;
+            border: 1px solid #ccc;
+            margin: 10px;
+        }
+        .status {
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🖼️ Image Loading Test</h1>
+        <p>This page tests if all images are loading correctly from their respective directories.</p>
+        
+        <div class="image-test">
+            <h3>Main Logo</h3>
+            <img src="../image/logo.png" alt="Gender Smart Logo" onload="showStatus(this, 'success')" onerror="showStatus(this, 'error')">
+            <div id="logo-status"></div>
+        </div>
+        
+        <div class="image-test">
+            <h3>Program Images</h3>
+            <img src="../image/game.jpg" alt="Game Image" onload="showStatus(this, 'success')" onerror="showStatus(this, 'error')">
+            <img src="../image/centric.png" alt="Centric Image" onload="showStatus(this, 'success')" onerror="showStatus(this, 'error')">
+            <img src="../image/webinars.jpg" alt="Webinars Image" onload="showStatus(this, 'success')" onerror="showStatus(this, 'error')">
+        </div>
+        
+        <div class="image-test">
+            <h3>Other Images</h3>
+            <img src="../image/os.png" alt="Organizational Structure" onload="showStatus(this, 'success')" onerror="showStatus(this, 'error')">
+            <img src="../image/qp.jpg" alt="QP Image" onload="showStatus(this, 'success')" onerror="showStatus(this, 'error')">
+            <img src="../image/gadtimpala.jpg" alt="GAD Timpala" onload="showStatus(this, 'success')" onerror="showStatus(this, 'error')">
+        </div>
+        
+        <div class="image-test">
+            <h3>ICCE Flyer Images</h3>
+            <img src="../ICCE/1.2.png" alt="Flyer 1.2" onload="showStatus(this, 'success')" onerror="showStatus(this, 'error')">
+            <img src="../ICCE/1.png" alt="Flyer 1" onload="showStatus(this, 'success')" onerror="showStatus(this, 'error')">
+            <img src="../ICCE/2.png" alt="Flyer 2" onload="showStatus(this, 'success')" onerror="showStatus(this, 'error')">
+            <img src="../ICCE/3,1.png" alt="Flyer 3.1" onload="showStatus(this, 'success')" onerror="showStatus(this, 'error')">
+            <img src="../ICCE/3.png" alt="Flyer 3" onload="showStatus(this, 'success')" onerror="showStatus(this, 'error')">
+            <img src="../ICCE/4.png" alt="Flyer 4" onload="showStatus(this, 'success')" onerror="showStatus(this, 'error')">
+        </div>
+        
+        <div class="image-test">
+            <h3>VAWC Images</h3>
+            <img src="../ICCE/FRONT.png" alt="VAWC Front" onload="showStatus(this, 'success')" onerror="showStatus(this, 'error')">
+            <img src="../ICCE/BACK.png" alt="VAWC Back" onload="showStatus(this, 'success')" onerror="showStatus(this, 'error')">
+            <img src="../ICCE/fr.png" alt="VAWC FR" onload="showStatus(this, 'success')" onerror="showStatus(this, 'error')">
+        </div>
+        
+        <div class="image-test">
+            <h3>Additional Images</h3>
+            <img src="../image/cores.png" alt="Cores Image" onload="showStatus(this, 'success')" onerror="showStatus(this, 'error')">
+            <img src="../image/icon.png" alt="Icon" onload="showStatus(this, 'success')" onerror="showStatus(this, 'error')">
+            <img src="../image/vawc.webp" alt="VAWC WebP" onload="showStatus(this, 'success')" onerror="showStatus(this, 'error')">
+        </div>
+        
+        <div id="test-results">
+            <h3>Test Results</h3>
+            <p>All images should load successfully. If any images show as broken, there may be a path issue.</p>
+        </div>
+    </div>
+    
+    <script>
+        function showStatus(img, status) {
+            const statusDiv = document.createElement('div');
+            statusDiv.className = 'status ' + status;
+            statusDiv.textContent = status === 'success' ? '✅ Loaded' : '❌ Failed to load';
+            img.parentNode.appendChild(statusDiv);
+        }
+        
+        // Test all images after page load
+        window.addEventListener('load', function() {
+            const images = document.querySelectorAll('img');
+            let loadedCount = 0;
+            let totalCount = images.length;
+            
+            images.forEach(img => {
+                if (img.complete && img.naturalHeight !== 0) {
+                    loadedCount++;
+                }
+            });
+            
+            const resultsDiv = document.getElementById('test-results');
+            resultsDiv.innerHTML += `
+                <p><strong>Summary:</strong> ${loadedCount}/${totalCount} images loaded successfully</p>
+                <p><strong>Status:</strong> ${loadedCount === totalCount ? '✅ All images working!' : '⚠️ Some images may have issues'}</p>
+            `;
+        });
+    </script>
+</body>
+</html>

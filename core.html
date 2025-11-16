@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gender Smart E-Learning</title>
+  <link rel="stylesheet" href="../css/home.css" />
+  <link rel="stylesheet" href="../css/main.css" />
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Custom JavaScript -->
+  <script src="../js/animations.js" defer></script>
+  <script src="../js/tabs.js" defer></script>
+  <script src="../js/shared-navigation.js" defer></script>
+  <script src="../js/flyer_modal.js" defer></script>
+</head>
+<body data-page="Home">
+    <header>
+        <div class="logo">
+            <img src="../../image/logo.png" alt="Gender Smart Logo" class="logo-img">
+            Gender Smart E-Learning
+        </div>
+        <nav>
+          <ul class="navbar">
+            <li><a href="homepage.html">Home</a></li>
+            <li class="dropdown">
+              <a href="#">About Us ▾</a>
+              <ul class="dropdown-menu">
+                <li><a href="herstory.html">Herstory</a></li>
+                <li><a href="missionvision.html">Vision, Mission, Mandates and Functions</a></li>
+                <li><a href="logo.html">The Logo</a></li>
+                <li><a href="qp.html">Quality Policy Statement</a></li>
+                <li><a href="core.html">Core Values</a></li>
+                <li><a href="os.html">Organizational Structure</a></li>
+                <li><a href="wpp.html">Our Website Privacy Policy</a></li>
+              </ul>
+            </li>
+            <li class="dropdown">
+              <a href="#">Projects/Programs ▾</a>
+              <ul class="dropdown-menu">
+                <li><a href="gadtimpala.html">GADtimpala</a></li>
+                <li><a href="gadwebinars.html">GAD webinars</a></li>
+              </ul>
+          </ul>
+        </nav>
+        <div class="auth-buttons">
+          <a href="../login.php" class="login">Student Login</a>
+        </div>
+        <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+      </header>
+    
+      <div class="gradient-line"></div>
+
+  <main>
+    <section class="core-values">
+      <h1 class="fade-in">Our Core Values</h1>
+      <p class="values-intro">Guiding principles that shape our commitment to gender equality and inclusive education</p>
+      
+      <div class="values-grid">
+        <div class="value-card">
+          <div class="icon">
+            <i class="fas fa-heart"></i>
+          </div>
+          <h3>Respect</h3>
+          <p>Fostering an environment of mutual respect and understanding across all gender identities.</p>
+          <div class="value-highlight">
+            <i class="fas fa-quote-left"></i>
+            <span>Every individual deserves dignity and respect</span>
+          </div>
+        </div>
+
+        <div class="value-card">
+          <div class="icon">
+            <i class="fas fa-balance-scale"></i>
+          </div>
+          <h3>Equality</h3>
+          <p>Promoting equal opportunities and fair treatment for all individuals.</p>
+          <div class="value-highlight">
+            <i class="fas fa-quote-left"></i>
+            <span>Equal rights, equal opportunities</span>
+          </div>
+        </div>
+
+        <div class="value-card">
+          <div class="icon">
+            <i class="fas fa-users"></i>
+          </div>
+          <h3>Inclusivity</h3>
+          <p>Creating a welcoming space that embraces diversity in all its forms.</p>
+          <div class="value-highlight">
+            <i class="fas fa-quote-left"></i>
+            <span>Everyone belongs, everyone matters</span>
+          </div>
+        </div>
+
+        <div class="value-card">
+          <div class="icon">
+            <i class="fas fa-lightbulb"></i>
+          </div>
+          <h3>Innovation</h3>
+          <p>Continuously evolving our educational approaches to better serve our community.</p>
+          <div class="value-highlight">
+            <i class="fas fa-quote-left"></i>
+            <span>Breaking barriers through innovation</span>
+          </div>
+        </div>
+
+        <div class="value-card">
+          <div class="icon">
+            <i class="fas fa-hands-helping"></i>
+          </div>
+          <h3>Collaboration</h3>
+          <p>Working together to create positive change in gender education and awareness.</p>
+          <div class="value-highlight">
+            <i class="fas fa-quote-left"></i>
+            <span>Stronger together, better together</span>
+          </div>
+        </div>
+
+        <div class="value-card">
+          <div class="icon">
+            <i class="fas fa-graduation-cap"></i>
+          </div>
+          <h3>Excellence</h3>
+          <p>Striving for the highest standards in gender education and awareness.</p>
+          <div class="value-highlight">
+            <i class="fas fa-quote-left"></i>
+            <span>Excellence in every endeavor</span>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-section">
+      <h4>Gender Smart E-Learning</h4>
+      <p>An online platform focused on promoting gender equality through digital education.</p>
+      <p>❤️ Made with care for our students</p>
+    </div>
+    <div class="footer-section">
+      <h4>Quick Links</h4>
+      <ul>
+        <li><a href="../admin_login.php">Portal</a></li>
+        <li><a href="../faculty_login.php">Faculty portal</a></li>
+      </ul>
+    </div>
+    <div class="footer-section">
+      <h4>Contact Us</h4>
+      <p>📧 gendersmart@cvsu-naic.edu.ph</p>
+      <p>📞 (046) 856 0942</p>
+      <p>📍 Cavite State University-Naic Barangay Bucana 4110 Naic Cavite</p>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 Gender Smart. All rights reserved.</p>
+    </div>
+  </footer>
+  
+  <script>
+    // Initialize core values specific animations
+    document.addEventListener('DOMContentLoaded', () => {
+      // Value cards animation
+      gsap.utils.toArray('.value-card').forEach((card, index) => {
+        gsap.from(card, {
+          scrollTrigger: {
+            trigger: card,
+            start: 'top 80%',
+          },
+          y: 50,
+          opacity: 0,
+          duration: 0.8,
+          delay: index * 0.2
+        });
+      });
+
+      // Impact numbers counter animation
+      gsap.utils.toArray('.impact-number').forEach(number => {
+        const target = number.getAttribute('data-target');
+        gsap.to(number, {
+          scrollTrigger: {
+            trigger: number,
+            start: 'top 80%',
+          },
+          innerText: target,
+          duration: 2,
+          snap: { innerText: 1 }
+        });
+      });
+    });
+  </script>
+</body>
+</html>

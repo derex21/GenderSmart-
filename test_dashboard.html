@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f7fa;
+        }
+        .test-container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .success { color: green; }
+        .error { color: red; }
+        .warning { color: orange; }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        pre {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>Admin Dashboard Test</h1>
+        <p>This page tests the admin dashboard functionality.</p>
+        
+        <div class="test-section">
+            <h3>1. Test Dashboard Statistics API</h3>
+            <button onclick="testDashboardStats()">Test Dashboard Stats</button>
+            <div id="stats-result"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>2. Test Recent Faculty API</h3>
+            <button onclick="testRecentFaculty()">Test Recent Faculty</button>
+            <div id="faculty-result"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>3. Test Recent Webinars API</h3>
+            <button onclick="testRecentWebinars()">Test Recent Webinars</button>
+            <div id="webinar-result"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>4. Test Faculty Form Submission</h3>
+            <button onclick="testFacultyForm()">Test Faculty Form</button>
+            <div id="faculty-form-result"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>5. Test Webinar Form Submission</h3>
+            <button onclick="testWebinarForm()">Test Webinar Form</button>
+            <div id="webinar-form-result"></div>
+        </div>
+    </div>
+
+    <script>
+        function testDashboardStats() {
+            const resultDiv = document.getElementById('stats-result');
+            resultDiv.innerHTML = '<p>Testing dashboard stats...</p>';
+            
+            fetch('../BACKEND/admin_api.php?action=get_dashboard_stats')
+                .then(response => response.json())
+                .then(data => {
+                    resultDiv.innerHTML = `
+                        <div class="success">✅ Dashboard stats loaded successfully</div>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                })
+                .catch(error => {
+                    resultDiv.innerHTML = `
+                        <div class="error">❌ Error: ${error.message}</div>
+                    `;
+                });
+        }
+
+        function testRecentFaculty() {
+            const resultDiv = document.getElementById('faculty-result');
+            resultDiv.innerHTML = '<p>Testing recent faculty...</p>';
+            
+            fetch('../BACKEND/admin_api.php?action=get_recent_faculty')
+                .then(response => response.json())
+                .then(data => {
+                    resultDiv.innerHTML = `
+                        <div class="success">✅ Recent faculty loaded successfully</div>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                })
+                .catch(error => {
+                    resultDiv.innerHTML = `
+                        <div class="error">❌ Error: ${error.message}</div>
+                    `;
+                });
+        }
+
+        function testRecentWebinars() {
+            const resultDiv = document.getElementById('webinar-result');
+            resultDiv.innerHTML = '<p>Testing recent webinars...</p>';
+            
+            fetch('../BACKEND/admin_api.php?action=get_recent_webinars')
+                .then(response => response.json())
+                .then(data => {
+                    resultDiv.innerHTML = `
+                        <div class="success">✅ Recent webinars loaded successfully</div>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                })
+                .catch(error => {
+                    resultDiv.innerHTML = `
+                        <div class="error">❌ Error: ${error.message}</div>
+                    `;
+                });
+        }
+
+        function testFacultyForm() {
+            const resultDiv = document.getElementById('faculty-form-result');
+            resultDiv.innerHTML = '<p>Testing faculty form submission...</p>';
+            
+            const formData = new FormData();
+            formData.append('faculty_id', 'TEST001');
+            formData.append('full_name', 'Test Faculty');
+            formData.append('email', 'test@example.com');
+            formData.append('password', 'testpass123');
+            formData.append('course', 'Computer Science');
+            formData.append('year_level', '1st Year');
+            
+            fetch('../BACKEND/admin_api.php?action=add_faculty', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                resultDiv.innerHTML = `
+                    <div class="success">✅ Faculty form test completed</div>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                `;
+            })
+            .catch(error => {
+                resultDiv.innerHTML = `
+                    <div class="error">❌ Error: ${error.message}</div>
+                `;
+            });
+        }
+
+        function testWebinarForm() {
+            const resultDiv = document.getElementById('webinar-form-result');
+            resultDiv.innerHTML = '<p>Testing webinar form submission...</p>';
+            
+            const formData = new FormData();
+            formData.append('title', 'Test Webinar');
+            formData.append('description', 'This is a test webinar');
+            formData.append('speaker_name', 'Dr. Test Speaker');
+            formData.append('speaker_title', 'Professor');
+            formData.append('webinar_date', '2024-12-31T14:00');
+            formData.append('duration', '60');
+            formData.append('category', 'upcoming');
+            formData.append('webinar_link', 'https://zoom.us/j/test123');
+            formData.append('google_form_link', 'https://forms.google.com/test');
+            
+            fetch('../BACKEND/admin_api.php?action=add_webinar', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                resultDiv.innerHTML = `
+                    <div class="success">✅ Webinar form test completed</div>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                `;
+            })
+            .catch(error => {
+                resultDiv.innerHTML = `
+                    <div class="error">❌ Error: ${error.message}</div>
+                `;
+            });
+        }
+    </script>
+</body>
+</html>

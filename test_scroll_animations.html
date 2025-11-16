@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scroll Animations Test</title>
+    <link rel="stylesheet" href="css/home.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+        .test-section {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: white;
+            text-align: center;
+        }
+        .section-1 { background: linear-gradient(135deg, #5c3c92, #8257c1); }
+        .section-2 { background: linear-gradient(135deg, #667eea, #764ba2); }
+        .section-3 { background: linear-gradient(135deg, #f093fb, #f5576c); }
+        .section-4 { background: linear-gradient(135deg, #4facfe, #00f2fe); }
+        .section-5 { background: linear-gradient(135deg, #43e97b, #38f9d7); }
+    </style>
+</head>
+<body>
+    <div class="test-section section-1">
+        <h1>Scroll Down to See Animations!</h1>
+    </div>
+    
+    <div class="test-section section-2">
+        <div class="animate-on-scroll">
+            <h2>Fade In Animation</h2>
+            <p>This section fades in as you scroll</p>
+        </div>
+    </div>
+    
+    <div class="test-section section-3">
+        <div class="animate-slide-left">
+            <h2>Slide Left Animation</h2>
+            <p>This section slides in from the left</p>
+        </div>
+    </div>
+    
+    <div class="test-section section-4">
+        <div class="animate-slide-right">
+            <h2>Slide Right Animation</h2>
+            <p>This section slides in from the right</p>
+        </div>
+    </div>
+    
+    <div class="test-section section-5">
+        <div class="animate-scale">
+            <h2>Scale Animation</h2>
+            <p>This section scales up as it appears</p>
+        </div>
+    </div>
+
+    <script src="js/animations.js"></script>
+</body>
+</html>

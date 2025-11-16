@@ -1,0 +1,1919 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gender Flip Cards</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .game-container {
+            width: 100%;
+            max-width: 900px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .screen {
+            display: none;
+            padding: 30px;
+            min-height: 600px;
+            flex-direction: column;
+        }
+
+        .screen.active {
+            display: flex;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #eee;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo h1 {
+            font-size: 28px;
+            color: #6a11cb;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo i {
+            font-size: 32px;
+            color: #6a11cb;
+        }
+
+        .points-display {
+            background: #6a11cb;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            box-shadow: 0 3px 10px rgba(106, 17, 203, 0.3);
+        }
+
+        .welcome-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            gap: 30px;
+        }
+
+        .welcome-content h2 {
+            font-size: 36px;
+            color: #6a11cb;
+            margin-bottom: 10px;
+        }
+
+        .welcome-content p {
+            font-size: 18px;
+            max-width: 600px;
+            line-height: 1.6;
+            color: #555;
+        }
+
+        .game-description {
+            background: #f0f5ff;
+            padding: 20px;
+            border-radius: 15px;
+            max-width: 600px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .buttons {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-primary {
+            background: #6a11cb;
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #2575fc;
+            color: white;
+        }
+
+        .btn-info {
+            background: #2dd4bf;
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn:active {
+            transform: translateY(1px);
+        }
+
+        /* Improved Game Screen Layout */
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #eee;
+        }
+
+        .game-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .game-title h1 {
+            font-size: 24px;
+            color: #6a11cb;
+        }
+
+        .game-title i {
+            font-size: 28px;
+            color: #6a11cb;
+        }
+
+        .game-info-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .info-card {
+            background: #f0f5ff;
+            padding: 15px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            text-align: center;
+        }
+
+        .info-label {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+
+        .info-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #6a11cb;
+        }
+
+        .timer-container {
+            background: #ff6b6b;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-size: 20px;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .timer-container.warning {
+            background: #ff4757;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .level-info {
+            text-align: center;
+            margin-bottom: 15px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .level-info h2 {
+            font-size: 20px;
+            color: #6a11cb;
+            margin-bottom: 5px;
+        }
+
+        .level-info p {
+            font-size: 16px;
+            color: #666;
+        }
+
+        .progress-container {
+            width: 100%;
+            background: #e0e0e0;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            overflow: hidden;
+            height: 12px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #6a11cb, #2575fc);
+            width: 0%;
+            transition: width 0.5s ease;
+            border-radius: 10px;
+        }
+
+        .game-content {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+
+        .powerups-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .powerup {
+            background: #ffd166;
+            color: #333;
+            padding: 12px 20px;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 3px 10px rgba(255, 209, 102, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .powerup:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 209, 102, 0.4);
+        }
+
+        .powerup.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: 0 3px 10px rgba(255, 209, 102, 0.3);
+        }
+
+        .cards-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+            flex: 1;
+        }
+
+        .card {
+            height: 130px;
+            perspective: 1000px;
+            cursor: pointer;
+        }
+
+        .card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .card.flipped .card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .card.matched .card-inner {
+            transform: rotateY(180deg);
+            box-shadow: 0 5px 15px rgba(46, 204, 113, 0.3);
+        }
+
+        .card-front, .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            border-radius: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 15px;
+        }
+
+        .card-front {
+            background: linear-gradient(135deg, #6a11cb, #2575fc);
+            color: white;
+        }
+
+        .card-front i {
+            font-size: 40px;
+        }
+
+        .card-back {
+            background: white;
+            transform: rotateY(180deg);
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .card-term {
+            font-weight: bold;
+            font-size: 16px;
+            color: #6a11cb;
+        }
+
+        .card-definition {
+            font-size: 14px;
+            color: #555;
+            line-height: 1.4;
+        }
+
+        .card-logo {
+            font-size: 12px;
+            color: #999;
+            margin-top: 5px;
+        }
+
+        .game-controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .combo-counter {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: #ff9f43;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 16px;
+            box-shadow: 0 5px 15px rgba(255, 159, 67, 0.3);
+            transform: scale(0);
+            transition: transform 0.3s ease;
+        }
+
+        .combo-counter.combo-active {
+            transform: scale(1);
+            animation: comboPulse 0.5s infinite alternate;
+        }
+
+        @keyframes comboPulse {
+            from { transform: scale(1); }
+            to { transform: scale(1.1); }
+        }
+
+        /* Modal Styles */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .modal h2 {
+            color: #6a11cb;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .modal p {
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        .tutorial-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .tutorial-step {
+            display: none;
+        }
+
+        .tutorial-step.active {
+            display: block;
+        }
+
+        .step-indicator {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .step-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #ddd;
+            transition: all 0.3s ease;
+        }
+
+        .step-dot.active {
+            background: #6a11cb;
+            transform: scale(1.2);
+        }
+
+        .tutorial-controls {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .feedback-stars {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .star {
+            font-size: 36px;
+            color: #ddd;
+            transition: color 0.3s ease;
+        }
+
+        .star.filled {
+            color: #ffd166;
+        }
+
+        .achievement-notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transform: translateX(150%);
+            transition: transform 0.5s ease;
+            z-index: 1001;
+        }
+
+        .achievement-notification.show {
+            transform: translateX(0);
+        }
+
+        .achievement-icon {
+            font-size: 24px;
+            color: #ffd166;
+        }
+
+        .achievement-text {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .level-feedback {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .level-feedback h3 {
+            font-size: 28px;
+            color: #6a11cb;
+            margin-bottom: 10px;
+        }
+
+        .level-feedback p {
+            font-size: 18px;
+            color: #555;
+            margin-bottom: 20px;
+        }
+
+        .score-breakdown {
+            background: #f0f5ff;
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+
+        .score-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .score-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .score-item.total {
+            font-weight: bold;
+            font-size: 18px;
+            color: #6a11cb;
+        }
+
+        .unlocked-content {
+            background: #e0f7fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            text-align: center;
+            color: #00695c;
+            font-weight: bold;
+        }
+
+        /* Logo Styles */
+        .logo-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .main-logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 42px;
+            color: #6a11cb;
+        }
+
+        .main-logo i {
+            font-size: 48px;
+        }
+
+        .main-logo h1 {
+            font-size: 42px;
+            color: #6a11cb;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .tagline {
+            font-size: 18px;
+            color: #666;
+            text-align: center;
+            max-width: 500px;
+        }
+        .tagline-image img {
+            width: 300px;
+            margin-top: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .cards-container {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .card {
+                height: 120px;
+            }
+            
+            .btn {
+                padding: 12px 20px;
+                font-size: 14px;
+            }
+            
+            .game-info-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .main-logo {
+                font-size: 32px;
+            }
+
+            .main-logo i {
+                font-size: 36px;
+            }
+
+            .main-logo h1 {
+                font-size: 32px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .cards-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .card {
+                height: 110px;
+            }
+            
+            .buttons {
+                flex-direction: column;
+                width: 100%;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .game-info-container {
+                grid-template-columns: 1fr;
+            }
+
+            .main-logo {
+                flex-direction: column;
+                gap: 10px;
+                font-size: 28px;
+            }
+
+            .main-logo i {
+                font-size: 32px;
+            }
+
+            .main-logo h1 {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <!-- Welcome Screen -->
+        <div id="welcome-screen" class="screen active">
+            <div class="header">
+                <div class="logo">
+                    <i class="fas fa-transgender-alt"></i>
+                </div>
+                <div class="points-display">
+                    <i class="fas fa-coins"></i>
+                    <span id="total-points">100</span>
+                </div>
+            </div>
+           <div class="welcome-content">
+                <div class="logo-container">
+                    <div class="main-logo">
+                        <i class="fas fa-transgender-alt"></i>
+                        <h1>Gender Flip Cards</h1>
+                    </div>
+                    <div class="tagline-image">
+                        <img src="1.jpg" alt="Gender Flip Cards Tagline" />
+                    </div>
+                </div>
+                
+                <div class="game-description">
+                    <p>Challenge your perception and rethink gender norms <br>Flip each card to match gender-related terms with their definitions. Break stereotypes, uncover truths, and expand your understanding of gender concepts.</p>
+                </div>
+                
+                <div class="buttons">
+                    <button id="play-game-btn" class="btn btn-primary">
+                        <i class="fas fa-play"></i> Play Game
+                    </button>
+                    <button id="concepts-btn" class="btn btn-info">
+                        <i class="fas fa-book"></i> Game Concepts
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tutorial Modal -->
+        <div id="tutorial-modal" class="modal">
+            <div class="modal-content">
+                <button class="modal-close" id="tutorial-modal-close">
+                    <i class="fas fa-times"></i>
+                </button>
+              <h2><i class="fa-solid fa-chalkboard-user"></i> Game Tutorial</h2>
+
+                <div class="tutorial-steps">
+                    <div class="tutorial-step active" id="step-1">
+                        <h3><i class="fa-solid fa-hand-wave"></i> Welcome to Gender Flip Cards!</h3>
+                        <p>This game will help you learn about gender concepts while having fun. Let's go through the basics.</p>
+                        <div class="game-description">
+                            <p><strong><i class="fa-solid fa-bullseye"></i> Objective:</strong> Match gender-related terms with their correct definitions by flipping cards.</p>
+                        </div>
+                    </div>
+
+                    <div class="tutorial-step" id="step-2">
+                        <h3><i class="fa-solid fa-gamepad"></i> How to Play</h3>
+                        <p><i class="fa-solid fa-mouse-pointer"></i> 1. Click on a card to flip it and reveal either a term or definition.</p>
+                        <p><i class="fa-solid fa-repeat"></i> 2. Click on another card to find its matching pair.</p>
+                        <p><i class="fa-solid fa-check-double"></i> 3. If the cards match (term and its correct definition), they will stay flipped.</p>
+                        <p><i class="fa-solid fa-shuffle"></i> 4. If they don't match, they will flip back and the cards will shuffle.</p>
+                    </div>
+
+                    <div class="tutorial-step" id="step-3">
+                        <h3><i class="fa-solid fa-star"></i> Game Features</h3>
+                        <p><strong><i class="fa-solid fa-hourglass-half"></i> Timer:</strong> Complete matches before time runs out.</p>
+                        <p><strong><i class="fa-solid fa-fire-flame-curved"></i> Combo System:</strong> Consecutive matches create combos for bonus points.</p>
+                        <p><strong><i class="fa-solid fa-bolt"></i> Power-ups:</strong> Use special abilities to help you complete levels.</p>
+                        <p><strong><i class="fa-solid fa-layer-group"></i> Levels:</strong> Progress through 20 levels with increasing difficulty.</p>
+                    </div>
+
+                    <div class="tutorial-step" id="step-4">
+                        <h3><i class="fa-solid fa-wand-magic-sparkles"></i> Power-ups</h3>
+                        <p><strong><i class="fa-solid fa-clock"></i> Time Freeze:</strong> Temporarily stops the timer (Cost: 5 points)</p>
+                        <p><strong><i class="fa-solid fa-eye"></i> Reveal:</strong> Shows all cards briefly (Cost: 5 points)</p>
+                        <p><strong><i class="fa-solid fa-lightbulb"></i> Hint:</strong> Briefly shows a matching pair (Cost: 1 point)</p>
+                    </div>
+
+                    <div class="tutorial-step" id="step-5">
+                        <h3><i class="fa-solid fa-play-circle"></i> Ready to Play?</h3>
+                        <p><i class="fa-solid fa-coins"></i> You'll start with 100 points. Each game costs 5 points to play.</p>
+                        <p><i class="fa-solid fa-trophy"></i> Complete levels to earn more points and unlock achievements!</p>
+                        <div class="game-description">
+                            <p><i class="fa-solid fa-heart"></i> Remember: This game is about learning and understanding gender concepts in a fun way!</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step-indicator">
+                    <div class="step-dot active" data-step="1"></div>
+                    <div class="step-dot" data-step="2"></div>
+                    <div class="step-dot" data-step="3"></div>
+                    <div class="step-dot" data-step="4"></div>
+                    <div class="step-dot" data-step="5"></div>
+                </div>
+                <div class="tutorial-controls">
+                    <button id="prev-step" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Previous
+                    </button>
+                    <button id="next-step" class="btn btn-primary">
+                        Next <i class="fas fa-arrow-right"></i>
+                    </button>
+                    <button id="skip-tutorial" class="btn btn-info">
+                        Skip Tutorial
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Concepts Modal -->
+        <div id="concepts-modal" class="modal">
+            <div class="modal-content">
+                <button class="modal-close" id="concepts-modal-close">
+                    <i class="fas fa-times"></i>
+                </button>
+                <h2>Understanding The Game Concepts</h2>
+              <p>Purpose of Gender Flip Cards is to help students recognize and challenge common gender stereotypes in a fun and interactive way. Through flipping and matching cards that represent different gender roles, traits, and situations, students can develop a deeper understanding of gender equality and inclusivity. The game encourages critical thinking, empathy, and awareness about how gender perceptions influence behavior and opportunities in society.</p>
+                
+                <p>Playing this game will help you understand these and many more gender-related concepts!</p>
+            </div>
+        </div>
+
+        <!-- Game Screen -->
+        <div id="game-screen" class="screen">
+            <div class="game-header">
+                <div class="game-title">
+                    <i class="fas fa-transgender-alt"></i>
+                    <h1 id="level-title">Level 1: Basic Gender Concepts</h1>
+                </div>
+                <div class="timer-container" id="timer">
+                    <i class="fas fa-clock"></i>
+                    <span id="timer-value">60</span>
+                </div>
+            </div>
+            
+            <div class="game-info-container">
+                <div class="info-card">
+                    <div class="info-label">Level</div>
+                    <div class="info-value" id="level-value">1</div>
+                </div>
+                <div class="info-card">
+                    <div class="info-label">Score</div>
+                    <div class="info-value" id="score-value">0</div>
+                </div>
+                <div class="info-card">
+                    <div class="info-label">Matches</div>
+                    <div class="info-value" id="matches-value">0/4</div>
+                </div>
+                <div class="info-card">
+                    <div class="info-label">Points</div>
+                    <div class="info-value" id="points-value">95</div>
+                </div>
+            </div>
+            
+            <div class="level-info">
+                <h2 id="level-desc">Match these fundamental gender studies terms</h2>
+                <p>Find the matching pairs of terms and definitions</p>
+            </div>
+            
+            <div class="progress-container">
+                <div class="progress-bar" id="progress-bar"></div>
+            </div>
+            
+            <div class="game-content">
+                <div class="powerups-container">
+                    <div class="powerup" id="time-freeze-powerup">
+                        <i class="fas fa-clock"></i> Time Freeze (5)
+                    </div>
+                    <div class="powerup" id="reveal-powerup">
+                        <i class="fas fa-eye"></i> Reveal (5)
+                    </div>
+                </div>
+                
+                <div class="cards-container" id="cards-container">
+                    <!-- Cards will be generated here -->
+                </div>
+                
+                <div class="game-controls">
+                    <button id="hint-btn" class="btn btn-secondary">
+                        <i class="fas fa-lightbulb"></i> Hint (1)
+                    </button>
+                    <button id="shuffle-btn" class="btn btn-info">
+                        <i class="fas fa-random"></i> Shuffle
+                    </button>
+                    <button id="quit-btn" class="btn btn-primary">
+                        <i class="fas fa-door-open"></i> Quit
+                    </button>
+                </div>
+            </div>
+            
+            <div class="combo-counter" id="combo-counter"></div>
+        </div>
+
+        <!-- Level Complete Screen -->
+        <div id="level-complete-screen" class="screen">
+            <div class="header">
+                <div class="logo">
+                    <i class="fas fa-trophy"></i>
+                    <h1>Level Complete!</h1>
+                </div>
+            </div>
+            <div class="welcome-content">
+                <div class="level-feedback">
+                    <h3 id="level-feedback-title">Excellent!</h3>
+                    <p id="level-feedback-desc">You completed the level with plenty of time to spare!</p>
+                    <h2 id="level-text">Level 1 Complete!</h2>
+                    <div class="score-breakdown">
+                        <div class="score-item">
+                            <span>Level Score:</span>
+                            <span id="level-score">+120</span>
+                        </div>
+                        <div class="score-item">
+                            <span>Points Earned:</span>
+                            <span id="points-earned">+12</span>
+                        </div>
+                        <div class="score-item">
+                            <span>Combo Bonus:</span>
+                            <span id="combo-bonus">+10</span>
+                        </div>
+                        <div class="score-item total">
+                            <span>Total Score:</span>
+                            <span id="final-score">120</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="unlocked-content" class="unlocked-content"></div>
+                
+                <div class="buttons">
+                    <button id="next-level-btn" class="btn btn-primary">
+                        <i class="fas fa-arrow-right"></i> Next Level
+                    </button>
+                    <button id="menu-btn" class="btn btn-secondary">
+                        <i class="fas fa-home"></i> Main Menu
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Game Over Screen -->
+        <div id="game-over-screen" class="screen">
+            <div class="header">
+                <div class="logo">
+                    <i class="fas fa-gamepad"></i>
+                    <h1>Game Over</h1>
+                </div>
+            </div>
+            <div class="welcome-content">
+                <div class="level-feedback">
+                    <h3 id="final-text">Time's Up!</h3>
+                    <p id="performance-message">Great job! You have a solid understanding of gender studies.</p>
+                    
+                    <div class="score-breakdown">
+                        <div class="score-item">
+                            <span>Levels Completed:</span>
+                            <span id="levels-completed">5</span>
+                        </div>
+                        <div class="score-item">
+                            <span>Total Score:</span>
+                            <span id="total-score">450</span>
+                        </div>
+                        <div class="score-item">
+                            <span>Points Earned:</span>
+                            <span id="points-earned-total">+35</span>
+                        </div>
+                    </div>
+                    
+                    <div class="feedback-stars">
+                        <i class="fas fa-star star filled"></i>
+                        <i class="fas fa-star star filled"></i>
+                        <i class="fas fa-star star filled"></i>
+                        <i class="fas fa-star star"></i>
+                        <i class="fas fa-star star"></i>
+                    </div>
+                    
+                    <div id="achievements-earned"></div>
+                </div>
+                
+                <div class="buttons">
+                    <button id="play-again-btn" class="btn btn-primary">
+                        <i class="fas fa-redo"></i> Play Again
+                    </button>
+                    <button id="back-to-menu-btn" class="btn btn-secondary">
+                        <i class="fas fa-home"></i> Main Menu
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- No Points Screen -->
+        <div id="no-points-screen" class="screen">
+            <div class="header">
+                <div class="logo">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <h1>Not Enough Points</h1>
+                </div>
+            </div>
+            <div class="welcome-content">
+                <div class="level-feedback">
+                    <h3>Oops! You need more points to play.</h3>
+                    <p>You currently have <span id="current-points">95</span> points, but you need 100 to play the game.</p>
+                    <p>Complete more levels to earn points, or try the tutorial to learn more about gender concepts.</p>
+                </div>
+                
+                <div class="buttons">
+                    <button id="back-to-menu-btn-2" class="btn btn-primary">
+                        <i class="fas fa-home"></i> Main Menu
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Achievement Notification -->
+        <div class="achievement-notification" id="achievement-notification">
+            <div class="achievement-icon" id="achievement-icon">
+                <i class="fas fa-trophy"></i>
+            </div>
+            <div class="achievement-text" id="achievement-text">
+                Achievement Unlocked!
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Game data and logic remains the same as in the previous version
+        // Extended game data with more gender-related terms and definitions
+        const gameData = [
+            // Level 1-3: Basic Gender Concepts
+            { term: "Gender", definition: "Socially constructed roles, behaviors, and identities" },
+            { term: "Sex", definition: "Biological characteristics including chromosomes and anatomy" },
+            { term: "Feminism", definition: "Movement advocating for women's rights and equality" },
+            { term: "Equality", definition: "State of being equal in status, rights, and opportunities" },
+            { term: "Cisgender", definition: "Gender identity matches sex assigned at birth" },
+            { term: "Transgender", definition: "Gender identity differs from sex assigned at birth" },
+            { term: "Non-binary", definition: "Gender identity outside the male/female binary" },
+            { term: "Gender Expression", definition: "How one presents gender through appearance and behavior" },
+            
+            // Level 4-6: Gender Identity
+            { term: "Genderfluid", definition: "Gender identity that changes over time" },
+            { term: "Agender", definition: "Person who does not identify with any gender" },
+            { term: "Bigender", definition: "Person who identifies with two genders" },
+            { term: "Genderqueer", definition: "Non-normative gender identity" },
+            { term: "Two-Spirit", definition: "Indigenous North American gender-variant identity" },
+            { term: "Gender Dysphoria", definition: "Distress from gender identity/sex mismatch" },
+            { term: "Gender Euphoria", definition: "Comfort when gender expression aligns with identity" },
+            { term: "Deadnaming", definition: "Using a trans person's birth name without consent" },
+            
+            // Level 7-9: Social Structures
+            { term: "Intersectionality", definition: "How multiple identities create unique experiences" },
+            { term: "Patriarchy", definition: "Social system where men hold primary power" },
+            { term: "Heteronormativity", definition: "Assumption that heterosexuality is the default" },
+            { term: "Queer Theory", definition: "Challenges categorical thinking about gender/sexuality" },
+            { term: "Misogyny", definition: "Dislike of, contempt for, or prejudice against women" },
+            { term: "Gender Spectrum", definition: "Concept that gender exists on a continuum" },
+            { term: "Pronouns", definition: "Words used to refer to people in place of names" },
+            { term: "Glass Ceiling", definition: "Unofficial barrier to advancement in a profession" },
+            
+            // Level 10-12: Advanced Concepts
+            { term: "Male Gaze", definition: "Depiction of the world from a masculine perspective" },
+            { term: "Toxic Masculinity", definition: "Cultural norms associated with harm to men and society" },
+            { term: "Reproductive Justice", definition: "Right to have children, not have children, and parent" },
+            { term: "Misgendering", definition: "Referring to someone with incorrect gender terms" },
+            { term: "Performativity", definition: "Gender as constructed through repeated acts" },
+            { term: "Heteropatriarchy", definition: "Social system privileging heterosexuality and men" },
+            { term: "Cisnormativity", definition: "Assumption that cisgender identity is the norm" },
+            { term: "Transphobia", definition: "Prejudice against transgender people" }
+        ];
+
+        // Level configurations
+        const levelConfigs = [
+            // Level 1-3: Basic (4 pairs, 60 seconds)
+            { pairs: 4, time: 60, difficulty: "Basic" },
+            { pairs: 4, time: 55, difficulty: "Basic" },
+            { pairs: 4, time: 50, difficulty: "Basic" },
+            
+            // Level 4-6: Easy (6 pairs, 60 seconds)
+            { pairs: 6, time: 60, difficulty: "Easy" },
+            { pairs: 6, time: 55, difficulty: "Easy" },
+            { pairs: 6, time: 50, difficulty: "Easy" },
+            
+            // Level 7-9: Medium (8 pairs, 70 seconds)
+            { pairs: 8, time: 70, difficulty: "Medium" },
+            { pairs: 8, time: 65, difficulty: "Medium" },
+            { pairs: 8, time: 60, difficulty: "Medium" }
+        ];
+
+        // Game state
+        let currentLevel = 1;
+        let cards = [];
+        let flippedCards = [];
+        let matchedPairs = 0;
+        let totalPairs = 0;
+        let score = 0;
+        let timeLeft = 60;
+        let timerInterval;
+        let canFlip = true;
+        let gameActive = false;
+        let totalPoints = 100;
+        let gameCost = 5;
+        let combo = 0;
+        let comboMultiplier = 1;
+        let achievements = [];
+        let powerups = {
+            timeFreeze: { available: true, active: false, cost: 5 },
+            reveal: { available: true, active: false, cost: 5 }
+        };
+
+        // Tutorial state
+        let currentStep = 1;
+        const totalSteps = 5;
+
+        // DOM elements
+        const welcomeScreen = document.getElementById('welcome-screen');
+        const gameScreen = document.getElementById('game-screen');
+        const levelCompleteScreen = document.getElementById('level-complete-screen');
+        const gameOverScreen = document.getElementById('game-over-screen');
+        const noPointsScreen = document.getElementById('no-points-screen');
+        
+        // Modals
+        const tutorialModal = document.getElementById('tutorial-modal');
+        const conceptsModal = document.getElementById('concepts-modal');
+        
+        const totalPointsDisplay = document.getElementById('total-points');
+        const playGameBtn = document.getElementById('play-game-btn');
+        const conceptsBtn = document.getElementById('concepts-btn');
+        const hintBtn = document.getElementById('hint-btn');
+        const shuffleBtn = document.getElementById('shuffle-btn');
+        const quitBtn = document.getElementById('quit-btn');
+        const nextLevelBtn = document.getElementById('next-level-btn');
+        const playAgainBtn = document.getElementById('play-again-btn');
+        const menuBtn = document.getElementById('menu-btn');
+        const backToMenuBtn = document.getElementById('back-to-menu-btn');
+        const backToMenuBtn2 = document.getElementById('back-to-menu-btn-2');
+        
+        // Tutorial controls
+        const tutorialModalClose = document.getElementById('tutorial-modal-close');
+        const conceptsModalClose = document.getElementById('concepts-modal-close');
+        const prevStepBtn = document.getElementById('prev-step');
+        const nextStepBtn = document.getElementById('next-step');
+        const skipTutorialBtn = document.getElementById('skip-tutorial');
+        
+        const scoreValue = document.getElementById('score-value');
+        const levelValue = document.getElementById('level-value');
+        const matchesValue = document.getElementById('matches-value');
+        const pointsValue = document.getElementById('points-value');
+        const levelTitle = document.getElementById('level-title');
+        const levelDesc = document.getElementById('level-desc');
+        const progressBar = document.getElementById('progress-bar');
+        const timerDisplay = document.getElementById('timer-value');
+        const timerContainer = document.getElementById('timer');
+        const cardsContainer = document.getElementById('cards-container');
+        const levelScore = document.getElementById('level-score');
+        const levelText = document.getElementById('level-text');
+        const levelFeedbackTitle = document.getElementById('level-feedback-title');
+        const levelFeedbackDesc = document.getElementById('level-feedback-desc');
+        const pointsEarned = document.getElementById('points-earned');
+        const comboBonus = document.getElementById('combo-bonus');
+        const finalScore = document.getElementById('final-score');
+        const finalText = document.getElementById('final-text');
+        const levelsCompleted = document.getElementById('levels-completed');
+        const totalScoreDisplay = document.getElementById('total-score');
+        const pointsEarnedTotal = document.getElementById('points-earned-total');
+        const performanceMessage = document.getElementById('performance-message');
+        const currentPoints = document.getElementById('current-points');
+        const comboCounter = document.getElementById('combo-counter');
+        const timeFreezePowerup = document.getElementById('time-freeze-powerup');
+        const revealPowerup = document.getElementById('reveal-powerup');
+        const achievementNotification = document.getElementById('achievement-notification');
+        const achievementIcon = document.getElementById('achievement-icon');
+        const achievementText = document.getElementById('achievement-text');
+        const unlockedContent = document.getElementById('unlocked-content');
+        const achievementsEarned = document.getElementById('achievements-earned');
+
+        // Event listeners
+        playGameBtn.addEventListener('click', showTutorialModal);
+        conceptsBtn.addEventListener('click', showConceptsModal);
+        hintBtn.addEventListener('click', showHint);
+        shuffleBtn.addEventListener('click', shuffleCards);
+        quitBtn.addEventListener('click', endGame);
+        nextLevelBtn.addEventListener('click', nextLevel);
+        playAgainBtn.addEventListener('click', startGame);
+        menuBtn.addEventListener('click', () => {
+            showScreen(welcomeScreen);
+            updatePointsDisplay();
+        });
+        backToMenuBtn.addEventListener('click', () => {
+            showScreen(welcomeScreen);
+            updatePointsDisplay();
+        });
+        backToMenuBtn2.addEventListener('click', () => {
+            showScreen(welcomeScreen);
+            updatePointsDisplay();
+        });
+        timeFreezePowerup.addEventListener('click', activateTimeFreeze);
+        revealPowerup.addEventListener('click', activateReveal);
+        
+        // Tutorial modal event listeners
+        tutorialModalClose.addEventListener('click', () => {
+            tutorialModal.classList.remove('active');
+        });
+        
+        conceptsModalClose.addEventListener('click', () => {
+            conceptsModal.classList.remove('active');
+        });
+        
+        prevStepBtn.addEventListener('click', prevStep);
+        nextStepBtn.addEventListener('click', nextStep);
+        skipTutorialBtn.addEventListener('click', skipTutorial);
+
+        // Tutorial functions
+        function showTutorialModal() {
+            currentStep = 1;
+            updateTutorialStep();
+            tutorialModal.classList.add('active');
+        }
+        
+        function showConceptsModal() {
+            conceptsModal.classList.add('active');
+        }
+        
+        function updateTutorialStep() {
+            // Hide all steps
+            document.querySelectorAll('.tutorial-step').forEach(step => {
+                step.classList.remove('active');
+            });
+            
+            // Show current step
+            document.getElementById(`step-${currentStep}`).classList.add('active');
+            
+            // Update step indicators
+            document.querySelectorAll('.step-dot').forEach((dot, index) => {
+                if (index + 1 === currentStep) {
+                    dot.classList.add('active');
+                } else {
+                    dot.classList.remove('active');
+                }
+            });
+            
+            // Update button states
+            prevStepBtn.disabled = currentStep === 1;
+            nextStepBtn.textContent = currentStep === totalSteps ? 'Start Game' : 'Next';
+        }
+        
+        function prevStep() {
+            if (currentStep > 1) {
+                currentStep--;
+                updateTutorialStep();
+            }
+        }
+        
+        function nextStep() {
+            if (currentStep < totalSteps) {
+                currentStep++;
+                updateTutorialStep();
+            } else {
+                // Start the game
+                tutorialModal.classList.remove('active');
+                startGame();
+            }
+        }
+        
+        function skipTutorial() {
+            tutorialModal.classList.remove('active');
+            startGame();
+        }
+
+        // Game functions
+        function startGame() {
+            // Check if player has enough points
+            if (totalPoints < gameCost) {
+                currentPoints.textContent = totalPoints;
+                showScreen(noPointsScreen);
+                return;
+            }
+            
+            // Deduct game cost
+            totalPoints -= gameCost;
+            updatePointsDisplay();
+            
+            // Reset game state
+            currentLevel = 1;
+            score = 0;
+            gameActive = true;
+            combo = 0;
+            comboMultiplier = 1;
+            
+            // Reset power-ups
+            resetPowerups();
+            
+            // Load first level
+            loadLevel();
+            
+            // Show game screen
+            showScreen(gameScreen);
+        }
+
+        function loadLevel() {
+            // Reset level state
+            cards = [];
+            flippedCards = [];
+            matchedPairs = 0;
+            canFlip = true;
+            
+            // Get level configuration
+            const levelConfig = levelConfigs[currentLevel - 1] || levelConfigs[levelConfigs.length - 1];
+            totalPairs = levelConfig.pairs;
+            timeLeft = levelConfig.time;
+            
+            // Calculate which cards to use for this level
+            const startIndex = (currentLevel - 1) * 4;
+            const levelData = gameData.slice(startIndex, startIndex + totalPairs);
+            
+            // If we don't have enough cards, use random ones
+            if (levelData.length < totalPairs) {
+                const shuffledGameData = [...gameData].sort(() => 0.5 - Math.random());
+                levelData.push(...shuffledGameData.slice(0, totalPairs - levelData.length));
+            }
+            
+            // Create card pairs
+            levelData.forEach(item => {
+                cards.push({
+                    type: 'term',
+                    content: item.term,
+                    id: item.term,
+                    matched: false
+                });
+                cards.push({
+                    type: 'definition',
+                    content: item.definition,
+                    id: item.term,
+                    matched: false
+                });
+            });
+            
+            // Shuffle cards
+            shuffleCardsArray();
+            
+            // Update UI
+            levelTitle.textContent = `Level ${currentLevel}: ${getLevelTitle(currentLevel)}`;
+            levelDesc.textContent = getLevelDescription(currentLevel);
+            levelValue.textContent = currentLevel;
+            scoreValue.textContent = score;
+            matchesValue.textContent = `0/${totalPairs}`;
+            pointsValue.textContent = totalPoints;
+            progressBar.style.width = '0%';
+            timerDisplay.textContent = timeLeft;
+            timerContainer.classList.remove('warning');
+            comboCounter.textContent = '';
+            comboCounter.classList.remove('combo-active');
+            
+            // Update grid layout based on number of cards
+            updateGridLayout(totalPairs * 2);
+            
+            // Update power-up buttons
+            updatePowerupButtons();
+            
+            // Render cards
+            renderCards();
+            
+            // Start/resume timer
+            startTimer();
+            
+            // Check for achievements
+            checkAchievements();
+        }
+
+        function getLevelTitle(level) {
+            if (level <= 3) return "Basic Gender Concepts";
+            if (level <= 6) return "Gender Identity";
+            if (level <= 9) return "Social Structures";
+            return "Advanced Concepts";
+        }
+
+        function getLevelDescription(level) {
+            if (level <= 3) return "Match these fundamental gender studies terms";
+            if (level <= 6) return "Concepts related to how people experience their gender";
+            if (level <= 9) return "Terms about how gender operates in society";
+            return "More complex gender studies terminology";
+        }
+
+        function updateGridLayout(totalCards) {
+            // Calculate optimal grid layout based on number of cards
+            let columns;
+            if (totalCards <= 8) columns = 4;
+            else if (totalCards <= 12) columns = 4;
+            else if (totalCards <= 16) columns = 4;
+            else if (totalCards <= 20) columns = 5;
+            else columns = 5;
+            
+            cardsContainer.style.gridTemplateColumns = `repeat(${columns}, 1fr)`;
+            
+            // Adjust card size based on number of cards
+            const cardHeight = totalCards > 20 ? '120px' : '130px';
+            document.querySelectorAll('.card').forEach(card => {
+                card.style.height = cardHeight;
+            });
+        }
+
+        function shuffleCardsArray() {
+            for (let i = cards.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [cards[i], cards[j]] = [cards[j], cards[i]];
+            }
+        }
+
+        function renderCards() {
+            cardsContainer.innerHTML = '';
+            
+            cards.forEach((card, index) => {
+                const cardElement = document.createElement('div');
+                cardElement.classList.add('card');
+                cardElement.dataset.index = index;
+                
+                if (card.matched) {
+                    cardElement.classList.add('matched');
+                    cardElement.classList.add('flipped');
+                }
+                
+                cardElement.innerHTML = `
+                    <div class="card-inner">
+                        <div class="card-front">
+                            <i class="fas fa-question-circle"></i>
+                        </div>
+                        <div class="card-back">
+                            <div class="card-term">${card.type === 'term' ? card.content : ''}</div>
+                            <div class="card-definition">${card.type === 'definition' ? card.content : ''}</div>
+                            <div class="card-logo">
+                                Gender Flip Cards
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                cardElement.addEventListener('click', () => flipCard(cardElement, index));
+                cardsContainer.appendChild(cardElement);
+            });
+        }
+
+        function flipCard(cardElement, index) {
+            // Check if we can flip this card
+            if (!canFlip || !gameActive || cardElement.classList.contains('flipped') || cards[index].matched) {
+                return;
+            }
+            
+            // Flip the card
+            cardElement.classList.add('flipped');
+            flippedCards.push(index);
+            
+            // Check if we have two cards flipped
+            if (flippedCards.length === 2) {
+                canFlip = false;
+                
+                // Check for match
+                const firstIndex = flippedCards[0];
+                const secondIndex = flippedCards[1];
+                const firstCard = cards[firstIndex];
+                const secondCard = cards[secondIndex];
+                
+                if (firstCard.id === secondCard.id && firstCard.type !== secondCard.type) {
+                    // Match found
+                    cards[firstIndex].matched = true;
+                    cards[secondIndex].matched = true;
+                    matchedPairs++;
+                    
+                    // Update combo
+                    combo++;
+                    if (combo >= 3) {
+                        comboMultiplier = Math.min(5, Math.floor(combo / 2));
+                        comboCounter.textContent = `COMBO x${comboMultiplier}!`;
+                        comboCounter.classList.add('combo-active');
+                    }
+                    
+                    // Calculate points with combo multiplier
+                    const basePoints = 10;
+                    const points = basePoints * comboMultiplier;
+                    
+                    // Update score and add time
+                    score += points;
+                    timeLeft += 5; // Add 5 seconds for each match
+                    if (timeLeft > 99) timeLeft = 99; // Cap at 99 seconds
+                    
+                    // Update UI
+                    scoreValue.textContent = score;
+                    matchesValue.textContent = `${matchedPairs}/${totalPairs}`;
+                    progressBar.style.width = `${(matchedPairs / totalPairs) * 100}%`;
+                    
+                    // Mark cards as matched and keep them flipped
+                    document.querySelector(`.card[data-index="${firstIndex}"]`).classList.add('matched');
+                    document.querySelector(`.card[data-index="${secondIndex}"]`).classList.add('matched');
+                    
+                    // Reset flipped cards
+                    flippedCards = [];
+                    canFlip = true;
+                    
+                    // Check if level is complete
+                    if (matchedPairs === totalPairs) {
+                        completeLevel();
+                    }
+                } else {
+                    // No match - reset combo
+                    combo = 0;
+                    comboMultiplier = 1;
+                    comboCounter.textContent = '';
+                    comboCounter.classList.remove('combo-active');
+                    
+                    // No match - flip cards back and shuffle after a delay
+                    setTimeout(() => {
+                        document.querySelector(`.card[data-index="${firstIndex}"]`).classList.remove('flipped');
+                        document.querySelector(`.card[data-index="${secondIndex}"]`).classList.remove('flipped');
+                        flippedCards = [];
+                        
+                        // Shuffle unmatched cards
+                        shuffleUnmatchedCards();
+                        
+                        canFlip = true;
+                    }, 1000);
+                }
+            }
+        }
+
+        function shuffleUnmatchedCards() {
+            // Get indices of unmatched cards
+            const unmatchedIndices = [];
+            const unmatchedCards = [];
+            
+            cards.forEach((card, index) => {
+                if (!card.matched) {
+                    unmatchedIndices.push(index);
+                    unmatchedCards.push(card);
+                }
+            });
+            
+            // Shuffle the unmatched cards
+            for (let i = unmatchedCards.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [unmatchedCards[i], unmatchedCards[j]] = [unmatchedCards[j], unmatchedCards[i]];
+            }
+            
+            // Update the main cards array with shuffled unmatched cards
+            unmatchedIndices.forEach((index, i) => {
+                cards[index] = unmatchedCards[i];
+            });
+            
+            // Re-render the cards with shuffle animation
+            renderCards();
+        }
+
+        function startTimer() {
+            clearInterval(timerInterval);
+            
+            timerInterval = setInterval(() => {
+                if (!gameActive || powerups.timeFreeze.active) return;
+                
+                timeLeft--;
+                timerDisplay.textContent = timeLeft;
+                
+                // Add warning style when time is low
+                if (timeLeft <= 10) {
+                    timerContainer.classList.add('warning');
+                } else {
+                    timerContainer.classList.remove('warning');
+                }
+                
+                // Check if time has run out
+                if (timeLeft <= 0) {
+                    endGame();
+                }
+            }, 1000);
+        }
+
+        function showHint() {
+            if (!gameActive || totalPoints < 1) return;
+            
+            // Deduct points for hint
+            totalPoints -= 1;
+            pointsValue.textContent = totalPoints;
+            
+            // Find two unmatched cards that would form a pair
+            let termIndex = -1;
+            let definitionIndex = -1;
+            
+            for (let i = 0; i < cards.length; i++) {
+                if (!cards[i].matched && cards[i].type === 'term') {
+                    termIndex = i;
+                    // Find matching definition
+                    for (let j = 0; j < cards.length; j++) {
+                        if (!cards[j].matched && cards[j].type === 'definition' && cards[j].id === cards[i].id) {
+                            definitionIndex = j;
+                            break;
+                        }
+                    }
+                    if (definitionIndex !== -1) break;
+                }
+            }
+            
+            // Briefly show both cards
+            if (termIndex !== -1 && definitionIndex !== -1) {
+                const termCard = document.querySelector(`.card[data-index="${termIndex}"]`);
+                const definitionCard = document.querySelector(`.card[data-index="${definitionIndex}"]`);
+                
+                termCard.classList.add('flipped');
+                definitionCard.classList.add('flipped');
+                
+                setTimeout(() => {
+                    termCard.classList.remove('flipped');
+                    definitionCard.classList.remove('flipped');
+                }, 1500);
+            }
+        }
+
+        function shuffleCards() {
+            if (!gameActive) return;
+            
+            // Flip all unmatched cards back
+            const unmatchedCards = Array.from(cardsContainer.children).filter(card => 
+                !card.classList.contains('matched')
+            );
+            
+            unmatchedCards.forEach(card => {
+                card.classList.remove('flipped');
+            });
+            
+            // Clear any flipped cards
+            flippedCards = [];
+            
+            // Shuffle the cards
+            shuffleCardsArray();
+            
+            // Re-render cards
+            renderCards();
+        }
+
+        function completeLevel() {
+            gameActive = false;
+            clearInterval(timerInterval);
+            
+            // Calculate level score and points earned
+            const levelBonus = currentLevel * 20;
+            const timeBonus = Math.floor(timeLeft / 5);
+            const comboBonusValue = combo * 2;
+            const levelScoreValue = 50 + levelBonus + timeBonus + comboBonusValue;
+            const pointsEarnedValue = 10 + Math.floor(levelScoreValue / 10);
+            
+            score += levelScoreValue;
+            totalPoints += pointsEarnedValue;
+            
+            // Update level complete screen
+            levelScore.textContent = `+${levelScoreValue}`;
+            levelText.textContent = `Level ${currentLevel} Complete!`;
+            pointsEarned.textContent = pointsEarnedValue;
+            comboBonus.textContent = comboBonusValue;
+            finalScore.textContent = score;
+            
+            // Show unlocked content
+            showUnlockedContent();
+            
+            // Provide feedback based on performance
+            if (timeLeft > timeLeft / 2) {
+                levelFeedbackTitle.textContent = "Excellent!";
+                levelFeedbackDesc.textContent = "You completed the level with plenty of time to spare!";
+            } else if (timeLeft > timeLeft / 4) {
+                levelFeedbackTitle.textContent = "Great Job!";
+                levelFeedbackDesc.textContent = "You finished with a good amount of time remaining.";
+            } else {
+                levelFeedbackTitle.textContent = "Close Call!";
+                levelFeedbackDesc.textContent = "You finished just in time! The next level will be more challenging.";
+            }
+            
+            // Show level complete screen after a short delay
+            setTimeout(() => {
+                showScreen(levelCompleteScreen);
+            }, 1000);
+        }
+
+        function nextLevel() {
+            currentLevel++;
+            gameActive = true;
+            
+            // Replenish some resources every few levels
+            if (currentLevel % 3 === 0) {
+                resetPowerups();
+            }
+            
+            loadLevel();
+            showScreen(gameScreen);
+        }
+
+        function endGame() {
+            gameActive = false;
+            clearInterval(timerInterval);
+            
+            // Calculate points earned in this game
+            const pointsEarnedThisGame = totalPoints - (100 - gameCost); // Calculate how many points were earned
+            
+            // Update game over screen
+            finalText.textContent = "Time's Up!";
+            levelsCompleted.textContent = currentLevel - 1;
+            totalScoreDisplay.textContent = score;
+            pointsEarnedTotal.textContent = pointsEarnedThisGame > 0 ? pointsEarnedThisGame : 0;
+            
+            // Show achievements earned
+            showAchievementsEarned();
+            
+            // Performance message
+            if (currentLevel >= 10) {
+                performanceMessage.textContent = "Outstanding! You have extensive knowledge of gender studies concepts.";
+            } else if (currentLevel >= 5) {
+                performanceMessage.textContent = "Great job! You have a solid understanding of gender studies.";
+            } else if (currentLevel >= 2) {
+                performanceMessage.textContent = "Good effort! Keep learning to improve your knowledge.";
+            } else {
+                performanceMessage.textContent = "Getting started! Practice more to improve your score.";
+            }
+            
+            // Update points display
+            updatePointsDisplay();
+            
+            showScreen(gameOverScreen);
+        }
+
+        function updatePointsDisplay() {
+            totalPointsDisplay.textContent = totalPoints;
+        }
+
+        function showScreen(screen) {
+            // Hide all screens
+            welcomeScreen.classList.remove('active');
+            gameScreen.classList.remove('active');
+            levelCompleteScreen.classList.remove('active');
+            gameOverScreen.classList.remove('active');
+            noPointsScreen.classList.remove('active');
+            
+            // Show the requested screen
+            screen.classList.add('active');
+        }
+
+        // Power-up functions
+        function activateTimeFreeze() {
+            if (!powerups.timeFreeze.available || !gameActive || totalPoints < powerups.timeFreeze.cost) return;
+            
+            // Deduct points
+            totalPoints -= powerups.timeFreeze.cost;
+            pointsValue.textContent = totalPoints;
+            
+            powerups.timeFreeze.active = true;
+            powerups.timeFreeze.available = false;
+            updatePowerupButtons();
+            
+            // Visual feedback
+            timeFreezePowerup.style.background = 'rgba(100, 200, 255, 0.5)';
+            
+            setTimeout(() => {
+                powerups.timeFreeze.active = false;
+                timeFreezePowerup.style.background = '';
+            }, 5000);
+        }
+
+        function activateReveal() {
+            if (!powerups.reveal.available || !gameActive || totalPoints < powerups.reveal.cost) return;
+            
+            // Deduct points
+            totalPoints -= powerups.reveal.cost;
+            pointsValue.textContent = totalPoints;
+            
+            powerups.reveal.active = true;
+            powerups.reveal.available = false;
+            updatePowerupButtons();
+            
+            // Visual feedback
+            revealPowerup.style.background = 'rgba(255, 255, 100, 0.5)';
+            
+            // Flip all cards temporarily
+            const allCards = Array.from(cardsContainer.children);
+            allCards.forEach(card => {
+                if (!card.classList.contains('matched')) {
+                    card.classList.add('flipped');
+                }
+            });
+            
+            setTimeout(() => {
+                // Flip unmatched cards back
+                allCards.forEach(card => {
+                    if (!card.classList.contains('matched')) {
+                        card.classList.remove('flipped');
+                    }
+                });
+                
+                powerups.reveal.active = false;
+                revealPowerup.style.background = '';
+            }, 3000);
+        }
+
+        function updatePowerupButtons() {
+            timeFreezePowerup.classList.toggle('disabled', !powerups.timeFreeze.available);
+            revealPowerup.classList.toggle('disabled', !powerups.reveal.available);
+        }
+
+        function resetPowerups() {
+            powerups.timeFreeze.available = true;
+            powerups.reveal.available = true;
+            updatePowerupButtons();
+        }
+
+        // Achievement system
+        function checkAchievements() {
+            const newAchievements = [];
+            
+            // Level-based achievements
+            if (currentLevel >= 5 && !achievements.includes('level5')) {
+                newAchievements.push({ icon: '<i class="fas fa-star"></i>', text: 'Reached Level 5!' });
+                achievements.push('level5');
+            }
+            if (currentLevel >= 10 && !achievements.includes('level10')) {
+                newAchievements.push({ icon: '<i class="fas fa-trophy"></i>', text: 'Reached Level 10!' });
+                achievements.push('level10');
+            }
+            
+            // Score-based achievements
+            if (score >= 500 && !achievements.includes('score500')) {
+                newAchievements.push({ icon: '<i class="fas fa-coins"></i>', text: 'Scored 500 Points!' });
+                achievements.push('score500');
+            }
+            if (score >= 1000 && !achievements.includes('score1000')) {
+                newAchievements.push({ icon: '<i class="fas fa-gem"></i>', text: 'Scored 1000 Points!' });
+                achievements.push('score1000');
+            }
+            
+            // Combo achievements
+            if (comboMultiplier >= 3 && !achievements.includes('combo3')) {
+                newAchievements.push({ icon: '<i class="fas fa-fire"></i>', text: '3x Combo!' });
+                achievements.push('combo3');
+            }
+            if (comboMultiplier >= 5 && !achievements.includes('combo5')) {
+                newAchievements.push({ icon: '<i class="fas fa-bolt"></i>', text: '5x Combo!' });
+                achievements.push('combo5');
+            }
+            
+            // Show new achievements
+            newAchievements.forEach((achievement, index) => {
+                setTimeout(() => {
+                    showAchievement(achievement.icon, achievement.text);
+                }, index * 1500);
+            });
+        }
+
+        function showAchievement(icon, text) {
+            achievementIcon.innerHTML = icon;
+            achievementText.textContent = text;
+            achievementNotification.classList.add('show');
+            
+            setTimeout(() => {
+                achievementNotification.classList.remove('show');
+            }, 3000);
+        }
+
+        function showUnlockedContent() {
+            unlockedContent.innerHTML = '';
+            
+            if (currentLevel === 5) {
+                unlockedContent.innerHTML = '<p><i class="fas fa-tada"></i> Unlocked Medium Difficulty!</p>';
+            } else if (currentLevel === 10) {
+                unlockedContent.innerHTML = '<p><i class="fas fa-tada"></i> Unlocked Hard Difficulty!</p>';
+            } else if (currentLevel % 3 === 0) {
+                unlockedContent.innerHTML = '<p><i class="fas fa-sparkles"></i> All Power-ups Replenished!</p>';
+            }
+        }
+
+        function showAchievementsEarned() {
+            achievementsEarned.innerHTML = '';
+            
+            if (achievements.length > 0) {
+                let html = '<h3>Achievements Earned:</h3><ul>';
+                achievements.forEach(achievement => {
+                    // This is a simplified version - in a real game, you'd have a mapping
+                    // between achievement IDs and their display names
+                    html += `<li>${achievement}</li>`;
+                });
+                html += '</ul>';
+                achievementsEarned.innerHTML = html;
+            }
+        }
+    </script>
+</body>
+</html>
